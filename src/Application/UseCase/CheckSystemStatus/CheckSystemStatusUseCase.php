@@ -8,6 +8,7 @@ use App\Domain\ValueObject\SystemStatus;
 
 final class CheckSystemStatusUseCase
 {
+    const string STATUS_OK = 'OK';
     public function __construct(
         private string $environment = 'dev',
         private string $version = '1.0.0',
@@ -16,7 +17,7 @@ final class CheckSystemStatusUseCase
     public function execute(): SystemStatus
     {
         return new SystemStatus(
-            status: 'ok',
+            status: self::STATUS_OK,
             version: $this->version,
             environment: $this->environment,
             timestamp: new \DateTimeImmutable('now', new \DateTimeZone('UTC')),
