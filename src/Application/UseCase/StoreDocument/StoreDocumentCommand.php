@@ -8,5 +8,6 @@ final readonly class StoreDocumentCommand
 {
     public function __construct(
         public string $content,
+        public string $holderId,
     ) {}
 }

@@ -10,6 +10,7 @@ use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Service\DocumentIdGeneratorInterface;
 use App\Domain\ValueObject\FileHash;
+use App\Domain\ValueObject\HolderId;
 
 final readonly class StoreDocumentUseCase
 {
@@ -31,6 +32,7 @@ final readonly class StoreDocumentUseCase
 
         $document = Document::create(
             id: $id,
+            holderId: HolderId::fromString($command->holderId),
             fileHash: $fileHash,
             wrappedDataKey: $envelope->wrappedDataKey,
         );
