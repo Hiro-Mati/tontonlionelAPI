@@ -13,6 +13,8 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | 3 | [Doctrine : montée de DBAL en 4.5](03-doctrine-dbal.md) | `doctrine:schema:update` cassé, base de test vide, 29 tests en erreur |
 | 4 | [Code : 9 erreurs PHPStan et test en échec](04-phpstan-holder.md) | Agrégat Holder, `DocumentProcessor`, `BirthDate`, tests API |
 | 5 | [Dépôt Git et Dependabot](05-depot-git-et-dependabot.md) | Commits, branches, push vers le dépôt personnel, désactivation de Dependabot |
+| 6 | [Améliorations](06-ameliorations.md) | Dépendances à jour, persistance complète de `Holder`, `Document.holderId`, `GET /v1/holders/{id}` |
+| — | [Journal de bord](JOURNAL.md) | Chronologie horodatée de toutes les actions |
 
 ## Résumé en une page
 
@@ -34,7 +36,9 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | Code | 9 fichiers `src/`, 2 fichiers `tests/`, `CHANGELOG.md` | PHPStan 0 erreur, PHPUnit 88 tests OK |
 | Dépôt personnel | `.github/dependabot.yaml` supprimé | Plus de PR automatiques |
 
-**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 88 tests et 159 assertions (81 tests et 1 échec avant intervention).
+**Améliorations (phase 2, document 6).** Dépendances montées (Symfony 8.1.9, Doctrine ORM 3.7.5, PHPStan 2.3.1, PHPUnit 13.4.3), agrégat `Holder` entièrement persisté avec un type Doctrine `birth_date`, `Document.holderId` persisté et contrôlé (un holder inconnu donne 422), nouvel endpoint `GET /v1/holders/{id}`, repository déplacé au bon endroit, migration `Version20261024071500`.
+
+**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 93 tests et 175 assertions (81 tests et 1 échec avant intervention). En dev, `doctrine:schema:validate` confirme que la base est en phase avec le mapping.
 
 **Commits.**
 
@@ -43,13 +47,15 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | `726d17b` | `main`, `fix/holder-phpstan-and-dev-stack` | `fix(dev-stack): run on current FrankenPHP image and DBAL 4.5` |
 | `77465e6` | `main`, `fix/holder-phpstan-and-dev-stack` | `fix(holder): resolve PHPStan errors and failing document upload` |
 | `cb43859` | `main` uniquement | `chore: disable Dependabot on this personal copy` |
+| `e0cdb12` | `main` | `docs(correctifs): report of the 24 October 2026 interventions` |
+| `6fcfe51` | `main` | `chore(deps): update Symfony 8.1.9, Doctrine ORM 3.7.5, PHPStan 2.3.1, PHPUnit 13.4.3` |
+| `ac50bb0` | `main` | `feat(holder): persist the whole aggregate, attach documents, expose GET /v1/holders/{id}` |
 
-## Ce qui n'a pas été fait
+## Ce qui reste ouvert
 
-Ces points relèvent du même chantier `Holder` mais demandent une décision de conception. Ils sont détaillés à la fin du document 4.
+Les points de conception listés à la fin du document 4 ont été traités dans le document 6. Restent, détaillés en 6.8 :
 
-- `Document.holderId` n'est ni mappé dans Doctrine ni persisté en base.
-- `Holder.orm.xml` ne mappe que `id`, `name` et `createdAt`.
-- La migration `Version20261024020529` crée `name VARCHAR(20)` alors que le mapping et `HolderName` acceptent 255 caractères.
-- `HolderRepository` est rangé dans `Persistence/` et non dans `Persistence/Doctrine/` comme les autres.
-- `HolderAlreadyExistsException` teste un UUID fraîchement généré, ce qui n'a pas d'intérêt pratique.
+- `HolderAlreadyExistsException` teste un UUID fraîchement généré ; une vraie règle de dédoublonnage est une décision fonctionnelle.
+- Les transitions `requestErasure()` et `anonymize()` de `Holder` ne sont exposées par aucun endpoint et aucune méthode de repository ne les persiste.
+- `GET /v1/documents/{id}` (consultation déchiffrée) reste à l'état « Planned ».
+- API Platform 5 et super-linter 9 sont des versions majeures à planifier séparément.
