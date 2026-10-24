@@ -87,6 +87,19 @@ Map `compliance-store.loc` to `127.0.0.1` on your development host:
 
 ---
 
+### Already have a checkout? Do this after pulling
+
+These steps apply to **every** developer, integrator and operator, not only to the person who made the changes:
+
+1. `make build && make up`: the PHP upload limits live in `frankenphp/conf.d/10-app.ini`, which is baked into the image.
+2. `make migrate`: new `api_client` and `audit_event` tables, nullable `holder.birth_date`.
+3. Create your own API key (see step 4 above) with the lowest role that fits your work, and paste it into `tests/http/http-client.private.env.json` (copied from the `.dist` file, ignored by Git) or into Swagger UI's "Authorize" dialog.
+4. `make test` must end with Deptrac 0 violation, PHPStan 0 error, PHPUnit 159 tests.
+
+Open design decisions (key rotation and expiry, rate limiting, audit log retention, anonymized record visibility…) are listed in [docs/correctifs/08-corrections-prioritaires.md](docs/correctifs/08-corrections-prioritaires.md#88-ce-qui-reste-à-décider) and [07-audit.md](docs/correctifs/07-audit.md#78-points-de-conception-non-tranchés): they need the project owner's call before anyone implements them.
+
+---
+
 ## 🔌 API Overview (`/api/v1`)
 
 | Endpoint | Role | Purpose |

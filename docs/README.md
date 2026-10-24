@@ -22,7 +22,7 @@ Bienvenue dans la documentation officielle du projet **Compliance Store**.
   * [ADR 0012: Regulation Engine Extracted as an External, Reusable Provider](architecture/adr/0012-external-regulation-engine-as-provider.md)
   * [ADR 0013: API Clients Authenticate with Hashed Bearer API Keys](architecture/adr/0013-api-key-authentication.md)
 * **Spécifications de l'API REST** : la documentation OpenAPI est générée par API Platform et servie sur `/api` (Swagger UI) et `/api/docs.json`. Les requêtes d'exemple sont dans `tests/http/`.
-* **[Documents correctifs](correctifs/README.md)** : interventions du 24 octobre 2026 (stack Docker, Doctrine, PHPStan, améliorations, audit, corrections prioritaires) et journal de bord.
+* **[Documents correctifs](correctifs/README.md)** : interventions du 24 octobre 2026 (stack Docker, Doctrine, PHPStan, améliorations, audit, corrections prioritaires), journal de bord, et la **liste des étapes à suivre par chaque membre de l'équipe** après récupération des changements (reconstruction de l'image, migrations, création de sa clé d'API).
 
 ---
 

@@ -65,6 +65,30 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | `6487af0` | `main` | `feat(gdpr): persist the erasure workflow with crypto-shredding, refuse orphan ciphertexts` |
 | `5237134` | `main` | `feat(document): read documents back and keep an audit trail of every personal-data action` |
 
+## À faire par chaque membre de l'équipe après avoir récupéré ces changements
+
+Ces étapes valent pour **tout le monde** (développeurs, intégrateurs, exploitation), pas seulement pour la personne qui a réalisé les corrections.
+
+1. **Reconstruire l'image PHP** : `frankenphp/conf.d/10-app.ini` (limites de dépôt) est copié dans l'image, un simple redémarrage ne suffit pas.
+   ```bash
+   make build
+   make up
+   ```
+2. **Appliquer les migrations** : trois nouvelles tables ou colonnes (`api_client`, `holder.birth_date` nullable, `audit_event`).
+   ```bash
+   make migrate
+   ```
+3. **Créer sa clé d'API** : toute requête sauf `GET /v1/health` et `/api/docs` est refusée (401) sans clé. La clé s'affiche une seule fois, elle n'est pas récupérable ensuite.
+   ```bash
+   make sf c="app:api-client:create <votre-nom-ou-service> --role=ROLE_ADMIN"
+   ```
+   Choisir le rôle le plus faible qui suffit : `ROLE_READER` (lecture), `ROLE_OPERATOR` (porteurs, documents, téléchargement), `ROLE_ADMIN` (espaces de stockage, effacement RGPD, journal d'audit). Une clé compromise se révoque immédiatement : `make sf c="app:api-client:revoke <nom>"`.
+4. **Renseigner les requêtes `.http`** : copier `tests/http/http-client.private.env.json.dist` vers `tests/http/http-client.private.env.json` (ignoré par Git) et y coller la clé dans `apiKey`. Toutes les requêtes de `tests/http/` envoient `Authorization: Bearer {{apiKey}}`.
+5. **Swagger UI** (`/api`) : cliquer sur « Authorize » et saisir la clé comme jeton Bearer.
+6. **Vérifier** : `make test` doit afficher Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 159 tests.
+
+En production, les secrets restent obligatoires (`DOCUMENT_MASTER_KEY`, `AWS_S3_ACCESS_KEY`, `AWS_S3_SECRET_KEY`, `POSTGRES_PASSWORD`) et la première clé d'administrateur se crée avec la même commande console dans le conteneur ; voir `docs/docker-infra/production.md`.
+
 ## Ce qui reste ouvert
 
 Les points de conception listés à la fin du document 4 ont été traités dans le document 6. Les cinq points de priorité haute de l'audit (document 7, section 7.8) ont été traités dans le document 8. Restent ouverts les points 6 à 27 de la section 7.8 et les points ajoutés en 8.8. Les principaux :
