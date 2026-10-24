@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class HolderApiTest extends ApiTestCase
 {
+    use ApiClientFixture;
+
     protected static ?bool $alwaysBootKernel = true;
 
     private const ADA = [
@@ -21,6 +23,7 @@ final class HolderApiTest extends ApiTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::clearApiClients();
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $entityManager->createQuery('DELETE FROM '.Holder::class)->execute();
@@ -28,7 +31,7 @@ final class HolderApiTest extends ApiTestCase
 
     public function testItRegistersAHolder(): void
     {
-        $response = static::createClient()->request('POST', '/api/v1/holders', [
+        $response = self::createAuthenticatedClient()->request('POST', '/api/v1/holders', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => self::ADA,
         ]);
@@ -47,7 +50,7 @@ final class HolderApiTest extends ApiTestCase
 
     public function testItGetsARegisteredHolder(): void
     {
-        $client = static::createClient();
+        $client = self::createAuthenticatedClient();
 
         $created = $client->request('POST', '/api/v1/holders', [
             'headers' => ['Content-Type' => 'application/json'],
@@ -68,21 +71,21 @@ final class HolderApiTest extends ApiTestCase
 
     public function testItReturns404ForAnUnknownHolder(): void
     {
-        static::createClient()->request('GET', '/api/v1/holders/00000000-0000-0000-0000-000000000000');
+        self::createAuthenticatedClient()->request('GET', '/api/v1/holders/00000000-0000-0000-0000-000000000000');
 
         self::assertResponseStatusCodeSame(404);
     }
 
     public function testItReturns404ForAnInvalidHolderId(): void
     {
-        static::createClient()->request('GET', '/api/v1/holders/not-a-uuid');
+        self::createAuthenticatedClient()->request('GET', '/api/v1/holders/not-a-uuid');
 
         self::assertResponseStatusCodeSame(404);
     }
 
     public function testItRejectsMissingFields(): void
     {
-        static::createClient()->request('POST', '/api/v1/holders', [
+        self::createAuthenticatedClient()->request('POST', '/api/v1/holders', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [],
         ]);
@@ -104,7 +107,7 @@ final class HolderApiTest extends ApiTestCase
     #[DataProvider('invalidBirthDates')]
     public function testItRejectsAnInvalidBirthDate(string $birthDate): void
     {
-        static::createClient()->request('POST', '/api/v1/holders', [
+        self::createAuthenticatedClient()->request('POST', '/api/v1/holders', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => ['holderName' => 'Ada Lovelace', 'birthDate' => $birthDate],
         ]);

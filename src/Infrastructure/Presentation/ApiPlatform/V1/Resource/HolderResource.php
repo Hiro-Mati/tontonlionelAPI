@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Post(
             uriTemplate: '/holders',
+            security: "is_granted('ROLE_OPERATOR')",
             openapi: new Operation(
                 tags: ['V1 - Holders'],
                 summary: 'Register a holder',
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Get(
             uriTemplate: '/holders/{id}',
+            security: "is_granted('ROLE_READER')",
             openapi: new Operation(
                 tags: ['V1 - Holders'],
                 summary: 'Get a holder',

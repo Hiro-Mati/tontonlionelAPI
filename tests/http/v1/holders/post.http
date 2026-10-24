@@ -3,6 +3,7 @@
 POST {{apiUrl}}/holders
 Content-Type: application/json
 Accept: application/ld+json
+Authorization: Bearer {{apiKey}}
 
 {
   "holderName": "Ada Lovelace",
@@ -22,6 +23,7 @@ Accept: application/ld+json
 ### Get the holder registered above (V1)
 GET {{apiUrl}}/holders/{{holderId}}
 Accept: application/ld+json
+Authorization: Bearer {{apiKey}}
 
 > {%
     client.test("Status code is 200 OK", function() {
@@ -35,6 +37,7 @@ Accept: application/ld+json
 ### Get an unknown holder (expect 404)
 GET {{apiUrl}}/holders/00000000-0000-0000-0000-000000000000
 Accept: application/ld+json
+Authorization: Bearer {{apiKey}}
 
 > {%
     client.test("Status code is 404 Not Found", function() {

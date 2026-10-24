@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Post(
             uriTemplate: '/documents',
+            security: "is_granted('ROLE_OPERATOR')",
             inputFormats: ['multipart' => ['multipart/form-data']],
             openapi: new Operation(
                 tags: ['V1 - Documents'],

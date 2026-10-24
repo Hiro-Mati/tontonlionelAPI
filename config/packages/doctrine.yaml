@@ -44,6 +44,13 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Doctrine/Mapping'
                 prefix: 'App\Domain\Entity'
                 alias: App
+            # Technical entities that never enter the domain (API clients, see security.yaml).
+            AppSecurity:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Infrastructure/Security/Mapping'
+                prefix: 'App\Infrastructure\Security'
+                alias: AppSecurity
 
 when@test:
     doctrine:

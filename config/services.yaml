@@ -24,6 +24,7 @@ services:
             - '../src/Domain/Exception/'
             - '../src/Domain/ValueObject/'
             - '../src/Application/UseCase/*/*Command.php'
+            - '../src/Infrastructure/Security/ApiClient.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

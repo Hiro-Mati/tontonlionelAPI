@@ -3,7 +3,7 @@
 POST {{apiUrl}}/documents
 Content-Type: multipart/form-data; boundary=ComplianceStoreBoundary
 Accept: application/ld+json
-# Authorization: Bearer {{jwtToken}} — disabled for now, no auth implemented yet
+Authorization: Bearer {{apiKey}}
 
 --ComplianceStoreBoundary
 Content-Disposition: form-data; name="holderId"
@@ -30,6 +30,7 @@ Content-Type: image/png
 POST {{apiUrl}}/documents
 Content-Type: multipart/form-data; boundary=ComplianceStoreBoundary
 Accept: application/ld+json
+Authorization: Bearer {{apiKey}}
 
 --ComplianceStoreBoundary
 Content-Disposition: form-data; name="file"; filename="passport.png"

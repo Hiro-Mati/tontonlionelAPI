@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class DocumentApiTest extends ApiTestCase
 {
+    use ApiClientFixture;
+
     protected static ?bool $alwaysBootKernel = true;
 
     private const FIXTURE_PATH = __DIR__.'/../http/passport.png';
@@ -27,6 +29,7 @@ final class DocumentApiTest extends ApiTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        self::clearApiClients();
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $entityManager->createQuery('DELETE FROM '.Document::class)->execute();
@@ -47,7 +50,7 @@ final class DocumentApiTest extends ApiTestCase
 
     public function testItStoresADocument(): void
     {
-        $client = static::createClient();
+        $client = self::createAuthenticatedClient();
 
         $response = $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
@@ -70,7 +73,7 @@ final class DocumentApiTest extends ApiTestCase
 
     public function testItRejectsAMissingFile(): void
     {
-        $client = static::createClient();
+        $client = self::createAuthenticatedClient();
 
         $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
@@ -84,7 +87,7 @@ final class DocumentApiTest extends ApiTestCase
 
     public function testItRejectsAMissingHolderId(): void
     {
-        $client = static::createClient();
+        $client = self::createAuthenticatedClient();
 
         $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
@@ -100,7 +103,7 @@ final class DocumentApiTest extends ApiTestCase
 
     public function testItRejectsAnUnknownHolder(): void
     {
-        $client = static::createClient();
+        $client = self::createAuthenticatedClient();
 
         $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
