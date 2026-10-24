@@ -20,8 +20,9 @@ Bienvenue dans la documentation officielle du projet **Compliance Store**.
   * [ADR 0010: Binary Responses Escape the State Provider Contract](architecture/adr/0010-binary-responses-escape-state-provider-contract.md)
   * [ADR 0011: Binary Responses Are Served by State Providers Returning a Response](architecture/adr/0011-binary-responses-served-by-state-providers.md)
   * [ADR 0012: Regulation Engine Extracted as an External, Reusable Provider](architecture/adr/0012-external-regulation-engine-as-provider.md)
+  * [ADR 0013: API Clients Authenticate with Hashed Bearer API Keys](architecture/adr/0013-api-key-authentication.md)
 * **Spécifications de l'API REST** : la documentation OpenAPI est générée par API Platform et servie sur `/api` (Swagger UI) et `/api/docs.json`. Les requêtes d'exemple sont dans `tests/http/`.
-* **[Documents correctifs](correctifs/README.md)** : interventions du 24 octobre 2026 (stack Docker, Doctrine, PHPStan, améliorations, audit) et journal de bord.
+* **[Documents correctifs](correctifs/README.md)** : interventions du 24 octobre 2026 (stack Docker, Doctrine, PHPStan, améliorations, audit, corrections prioritaires) et journal de bord.
 
 ---
 

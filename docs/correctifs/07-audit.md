@@ -111,7 +111,7 @@ Aucune vulnérabilité connue dans les dépendances (`composer audit`). Aucune m
 
 Classés par priorité. Aucun n'est une erreur au sens strict ; chacun demande une décision du propriétaire du projet.
 
-**Priorité haute (sécurité, intégrité)**
+**Priorité haute (sécurité, intégrité)** : les cinq points ci-dessous ont été traités le jour même, voir le [document 8](08-corrections-prioritaires.md).
 
 1. **Taille et type des fichiers déposés.** `#[Assert\File]` sur `DocumentResource::$file` n'a ni `maxSize` ni `mimeTypes` ; `DocumentProcessor` lit tout le contenu en mémoire avant hachage et chiffrement. Seul `upload_max_filesize` (2 Mo par défaut, non configuré dans `frankenphp/conf.d/`) borne l'entrée. Décider la limite métier et les formats acceptés, puis les porter dans la contrainte et dans `10-app.ini`.
 2. **Ordre stockage / persistance dans `StoreDocumentUseCase`.** L'objet chiffré est écrit dans le bucket avant `documents->add()`. Un échec de l'INSERT laisse un objet orphelin. Ajouter une compensation (suppression dans le port de stockage, qui n'a pas encore de méthode `delete()`) ou inverser l'ordre.

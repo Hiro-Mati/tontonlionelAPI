@@ -9,20 +9,20 @@ Compliance Store adopte les principes de la **Clean Architecture** (Robert C. Ma
 ```text
 src/
 ├── Domain/                        # COUCHE DOMAINE (métier pur, zéro dépendance externe)
-│   ├── Entity/                    # Agrégats : Document, Holder, IdentityDocument, StorageSpace
+│   ├── Entity/                    # Agrégats : Document, Holder, IdentityDocument, StorageSpace, AuditEvent
 │   ├── ValueObject/               # Objets de valeur immuables (DocumentId, HolderId, BirthDate, FileHash, EncryptedPayload…)
 │   ├── Exception/                 # Exceptions métier (HolderNotFoundException, StorageSpaceCodeAlreadyExistsException…)
 │   ├── Event/                     # Réservé : événements métier (vide à ce jour)
 │   └── Port/                      # Contrats d'interfaces (ports hexagonaux)
 │       ├── Gateway/               # CipherGatewayInterface, StorageGatewayInterface
 │       ├── Repository/            # DocumentRepositoryInterface, HolderRepositoryInterface…
-│       ├── Service/               # IdValidatorInterface, générateurs d'identifiants
+│       ├── Service/               # IdValidatorInterface, AuditTrailInterface, générateurs d'identifiants
 │       ├── Clock/                 # Réservé : horloge injectable (vide à ce jour)
 │       ├── Event/                 # Réservé : publication d'événements (vide à ce jour)
 │       └── Notification/          # Réservé : notifications (vide à ce jour)
 │
 ├── Application/                   # COUCHE APPLICATION (orchestration des cas d'usage)
-│   ├── UseCase/                   # Un dossier par cas d'usage : StoreDocument, CreateHolder, GetHolder, RegisterIdentityDocument…
+│   ├── UseCase/                   # Un dossier par cas d'usage : StoreDocument, ConsultDocument, CreateHolder, AnonymizeHolder, ListAuditEvents…
 │   │                              # chaque dossier porte son UseCase et sa Command (DTO d'entrée)
 │   └── Dto/                       # Réservé (vide à ce jour)
 │
@@ -31,6 +31,9 @@ src/
     ├── Storage/                   # MinioStorageGateway (Flysystem S3), StorageKey
     ├── Persistence/Doctrine/      # Repositories Doctrine, Mapping/ (XML), Type/ (types DBAL des Value Objects)
     ├── Service/                   # Générateurs d'UUID et validateur d'identifiants (Symfony Uid)
+    ├── Security/                  # ApiClient (clé d'API hachée), ApiKeyTokenHandler, ApiKeyEntryPoint, Mapping/ (ADR 0013)
+    ├── Audit/                     # SecurityAwareAuditTrail (acteur = client d'API authentifié)
+    ├── Console/                   # app:api-client:create, app:api-client:revoke
     └── Presentation/ApiPlatform/  # V1/Resource/ (ressources API Platform) et V1/State/ (providers et processors)
 ```
 

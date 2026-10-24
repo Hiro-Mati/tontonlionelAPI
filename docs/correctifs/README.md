@@ -15,6 +15,7 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | 5 | [Dépôt Git et Dependabot](05-depot-git-et-dependabot.md) | Commits, branches, push vers le dépôt personnel, désactivation de Dependabot |
 | 6 | [Améliorations](06-ameliorations.md) | Dépendances à jour, persistance complète de `Holder`, `Document.holderId`, `GET /v1/holders/{id}` |
 | 7 | [Audit complet du projet](07-audit.md) | Revue de chaque dossier et fichier, 60 corrections (sécurité Compose, Caddyfile prod, types Doctrine, chiffrement, outillage, docs), points de conception restants |
+| 8 | [Corrections prioritaires](08-corrections-prioritaires.md) | Clés d'API et rôles, limites de dépôt, effacement RGPD persistable avec suppression cryptographique, compensation du stockage, lecture et téléchargement des documents, journal d'audit |
 | — | [Journal de bord](JOURNAL.md) | Chronologie horodatée de toutes les actions |
 
 ## Résumé en une page
@@ -41,7 +42,9 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 
 **Audit (phase 3, document 7).** Revue de l'intégralité du dépôt, fichier par fichier. Corrections les plus importantes : secrets de développement retirés du `compose.yaml` de base et rendus obligatoires en production, Caddyfile de production aligné sur Mercure ≥ 0.21 et débarrassé des directives TLS de développement, image FrankenPHP épinglée, types Doctrine qui lèvent une erreur au lieu de retourner `NULL`, déchiffrement robuste aux données tronquées, `GET /v1/health` qui rapporte le vrai environnement, Makefile et fichiers `.http` corrigés, liens morts de la documentation réparés.
 
-**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 107 tests et 200 assertions (81 tests et 1 échec avant intervention, 93 avant l'audit). En dev, `doctrine:schema:validate` confirme que la base est en phase avec le mapping.
+**Corrections prioritaires (phase 4, document 8).** Les cinq faiblesses relevées après l'audit sont traitées dans l'ordre : authentification par clés d'API hachées avec trois rôles hiérarchisés (`ROLE_ADMIN` > `ROLE_OPERATOR` > `ROLE_READER`, ADR 0013), limites de taille et de type sur les dépôts jusqu'à Caddy (413), parcours RGPD d'effacement exposé et persisté avec suppression cryptographique des documents du porteur, compensation du stockage quand la persistance échoue, lecture des documents (métadonnées, liste par porteur, téléchargement déchiffré avec contrôle d'intégrité) et journal d'audit de toutes les actions sur des données personnelles.
+
+**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 159 tests et 381 assertions (81 tests et 1 échec avant intervention, 93 avant l'audit, 107 avant les corrections prioritaires). En dev, `doctrine:schema:validate` confirme que la base est en phase avec le mapping ; les deux Caddyfiles passent `frankenphp validate`.
 
 **Commits.**
 
@@ -56,12 +59,18 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | `fd1e1ff` | `main` | `chore(deps): raise version floors to the installed releases` |
 | `f4ad5d3` | `main` | `docs(correctifs): improvements report and logbook` |
 | `1f7a07e` | `main` | `fix: project-wide audit (compose secrets, prod Caddyfile, Doctrine types, cipher robustness, tooling, docs)` |
+| `ca1e323` | `main` | `docs(correctifs): project-wide audit report and logbook` |
+| `5c2a90b` | `main` | `feat(security): authenticate API clients with hashed bearer API keys and a role hierarchy` |
+| `78bf646` | `main` | `feat(document): enforce upload size and content-type limits end to end` |
+| `6487af0` | `main` | `feat(gdpr): persist the erasure workflow with crypto-shredding, refuse orphan ciphertexts` |
+| `5237134` | `main` | `feat(document): read documents back and keep an audit trail of every personal-data action` |
 
 ## Ce qui reste ouvert
 
-Les points de conception listés à la fin du document 4 ont été traités dans le document 6. L'audit (document 7, section 7.6) dresse la liste complète des points de conception non tranchés, classés par priorité. Les principaux :
+Les points de conception listés à la fin du document 4 ont été traités dans le document 6. Les cinq points de priorité haute de l'audit (document 7, section 7.8) ont été traités dans le document 8. Restent ouverts les points 6 à 27 de la section 7.8 et les points ajoutés en 8.8. Les principaux :
 
+- Rotation et expiration des clés d'API, limitation de débit : une clé compromise se révoque à la main.
+- Rétention du journal d'audit et sort de l'enregistrement anonymisé (lisible, ou 410) : décisions de conformité.
+- `IdentityDocument` n'est rattaché à aucun porteur et échappe donc à l'anonymisation.
 - `HolderAlreadyExistsException` teste un UUID fraîchement généré ; une vraie règle de dédoublonnage est une décision fonctionnelle.
-- Les transitions `requestErasure()` et `anonymize()` de `Holder` ne sont exposées par aucun endpoint et aucune méthode de repository ne les persiste.
-- `GET /v1/documents/{id}` (consultation déchiffrée) reste à l'état « Planned ».
 - API Platform 5 et super-linter 9 sont des versions majeures à planifier séparément.

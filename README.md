@@ -31,6 +31,9 @@ src/
     ├── Presentation/    # API Platform resources & state providers/processors
     ├── Storage/         # MinIO / S3-compatible document storage (Flysystem)
     ├── Gateway/         # Libsodium envelope encryption
+    ├── Security/        # API clients, bearer API key authentication (ADR 0013)
+    ├── Audit/           # Audit trail adapter (actor = authenticated API client)
+    ├── Console/         # app:api-client:create / app:api-client:revoke
     └── Service/         # UUID generators
 ```
 
@@ -71,10 +74,32 @@ Map `compliance-store.loc` to `127.0.0.1` on your development host:
    * **API Platform / Swagger UI**: `https://compliance-store.loc/api` (or `http://compliance-store.loc/api`)
    * **MinIO Web Console (Local S3)**: `http://localhost:9001` *(User: `minioadmin` / Pass: `minioadmin`)*
 
-4. **Stop the environment**:
+4. **Create an API key** (every endpoint but `GET /v1/health` requires one):
+   ```bash
+   make sf c="app:api-client:create back-office --role=ROLE_ADMIN"
+   ```
+   The key (`cs_...`) is printed once; send it as `Authorization: Bearer cs_...`. Roles: `ROLE_ADMIN` > `ROLE_OPERATOR` > `ROLE_READER`. Revoke with `make sf c="app:api-client:revoke back-office"`. For the `tests/http` requests, copy `tests/http/http-client.private.env.json.dist` to `http-client.private.env.json` and paste the key.
+
+5. **Stop the environment**:
    ```bash
    make down
    ```
+
+---
+
+## 🔌 API Overview (`/api/v1`)
+
+| Endpoint | Role | Purpose |
+|----------|------|---------|
+| `GET /health` | public | Liveness, environment and version |
+| `POST /holders`, `GET /holders/{id}` | operator / reader | Register and read a data subject |
+| `POST /holders/{id}/erasure-request`, `POST /holders/{id}/anonymization` | admin | GDPR art. 17: flag, then destroy the documents and anonymize the record |
+| `POST /documents` (multipart `file` + `holderId`) | operator | Encrypt and store a document (size and type limits: `DOCUMENT_MAX_SIZE`, `DOCUMENT_MIME_TYPES`) |
+| `GET /documents/{id}`, `GET /holders/{id}/documents` | reader | Metadata, list per holder |
+| `GET /documents/{id}/content` (`Accept: application/octet-stream`) | operator | Decrypted download, integrity-checked, audited |
+| `POST /identity-documents` | operator | Register a passport or ID card |
+| `POST`/`GET`/`PATCH /storage-spaces` | admin / reader | Storage spaces |
+| `GET /audit-events?subjectId=&limit=` | admin | Who did what to which holder or document |
 
 ---
 

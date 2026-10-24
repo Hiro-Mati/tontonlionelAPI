@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Every endpoint but `GET /v1/health` and the OpenAPI documentation requires an API key (`Authorization: Bearer cs_...`). Keys belong to `ApiClient` records, are stored as SHA-256 hashes and are issued once by `app:api-client:create`, revoked by `app:api-client:revoke`. Roles `ROLE_ADMIN` > `ROLE_OPERATOR` > `ROLE_READER` are declared on each operation (ADR 0013).
+- `POST /v1/documents` enforces `DOCUMENT_MAX_SIZE` (10M) and `DOCUMENT_MIME_TYPES` (PDF, PNG, JPEG, sniffed from the content); PHP limits raised to 12M/16M and Caddy answers 413 above 16 MiB before PHP runs.
+- `GET /v1/documents/{id}/content` checks the decrypted content against the hash recorded at store time before releasing it; the response is `no-store`.
+- Production Caddyfile: the Mercure hub is named, so a `SERVER_NAME` with several hosts no longer prevents the server from starting.
+
 ### Added
+- GDPR erasure workflow: `POST /v1/holders/{id}/erasure-request` and `POST /v1/holders/{id}/anonymization` (administrators). Anonymization destroys the holder's documents (ciphertext and wrapped key) and drops the name and birth date; the holder then refuses new documents (422).
+- Document reads: `GET /v1/documents/{id}` (metadata), `GET /v1/holders/{holderId}/documents` (oldest first), `GET /v1/documents/{id}/content` (decrypted download, `application/octet-stream`, ADR 0011).
+- Audit trail: `AuditEvent` records holder registration, erasure request, anonymization, document storage and consultation with the acting API client; `GET /v1/audit-events?subjectId=&limit=` (administrators).
+- `StoreDocumentUseCase` removes the ciphertext it just wrote when the database insert fails (no orphan object).
+- Migrations `Version20261024093000` (api_client), `Version20261024100000` (nullable birth_date), `Version20261024110000` (audit_event).
 - `Holder` aggregate persisted in full (`birth_date`, `status`, GDPR timestamps) with a dedicated `birth_date` Doctrine type; `GET /v1/holders/{id}` exposed through `GetHolderUseCase` and `GetHolderProvider`.
 - `Document.holderId` persisted (`holder_id` column, indexed); `StoreDocumentUseCase` rejects an unknown holder with `HolderNotFoundException` (422 on `POST /v1/documents`).
 - `Document` entity and Value Objects (`DocumentId`, `FileHash`, `EncryptedPayload`, `WrappedDataKey`, `EncryptionEnvelope`); `StorageKey` lives in `Infrastructure\Storage`.
@@ -22,7 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RegulatoryScope` feature (entity, value objects, use cases, repository, API resource, `DocumentComplianceChecker` domain service and `NonCompliantDocumentException`): never released, dropped before its first stable version.
 
 ### Changed
-- Dependencies: Symfony 8.1.9, Doctrine ORM 3.7.5 and DBAL 4.5.0, PHPStan 2.3.1, PHPUnit 13.4.3, Deptrac 4.7.2. API Platform stays on 4.3.
+- Dependencies: Symfony 8.1.9, Doctrine ORM 3.7.5 and DBAL 4.5.0, PHPStan 2.3.1, PHPUnit 13.4.3, Deptrac 4.7.2. API Platform stays on 4.3. Added `symfony/security-bundle`, `symfony/expression-language`, `symfony/mime`.
+- `Holder::anonymize()` takes no argument: the name becomes `anonymized` and the birth date `null`; `HolderRepositoryInterface::update()`, `DocumentRepositoryInterface::findById()/findByHolder()/remove()` and `StorageGatewayInterface::delete()` added.
+- API tests authenticate through the `ApiClientFixture` trait; `tests/http` requests send `{{apiKey}}` from `http-client.private.env.json`.
 - `HolderRepository` moved to `Infrastructure\Persistence\Doctrine` next to the other Doctrine repositories.
 - `HolderName` and `StorageSpaceName` store the trimmed value; the four id Value Objects reject an empty string even without a validator.
 - `StoreDocumentUseCase` validates the holder id with `IdValidatorInterface` like the other use cases.
