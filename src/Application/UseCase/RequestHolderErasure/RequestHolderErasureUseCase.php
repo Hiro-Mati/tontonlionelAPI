@@ -8,7 +8,9 @@ use App\Domain\Entity\Holder;
 use App\Domain\Exception\HolderNotFoundException;
 use App\Domain\Exception\InvalidHolderStatusTransitionException;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
+use App\Domain\ValueObject\AuditAction;
 use App\Domain\ValueObject\HolderId;
 
 /**
@@ -21,6 +23,7 @@ final readonly class RequestHolderErasureUseCase
     public function __construct(
         private HolderRepositoryInterface $holders,
         private IdValidatorInterface $idValidator,
+        private AuditTrailInterface $auditTrail,
     ) {}
 
     /**
@@ -41,6 +44,8 @@ final readonly class RequestHolderErasureUseCase
         $flagged = $holder->requestErasure();
 
         $this->holders->update($flagged);
+
+        $this->auditTrail->record(AuditAction::HolderErasureRequested, $holderId->value);
 
         return $flagged;
     }

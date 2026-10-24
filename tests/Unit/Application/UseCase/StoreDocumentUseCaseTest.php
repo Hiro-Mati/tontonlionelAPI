@@ -14,7 +14,9 @@ use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
 use App\Domain\Port\Service\DocumentIdGeneratorInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
+use App\Domain\ValueObject\AuditAction;
 use App\Domain\ValueObject\BirthDate;
 use App\Domain\ValueObject\DocumentId;
 use App\Domain\ValueObject\EncryptedPayload;
@@ -53,6 +55,9 @@ final class StoreDocumentUseCaseTest extends TestCase
         $idGenerator = $this->createStub(DocumentIdGeneratorInterface::class);
         $idGenerator->method('generate')->willReturn(DocumentId::fromString('660e8400-e29b-41d4-a716-446655440000'));
 
+        $auditTrail = $this->createMock(AuditTrailInterface::class);
+        $auditTrail->expects(self::once())->method('record')->with(AuditAction::DocumentStored, '660e8400-e29b-41d4-a716-446655440000');
+
         $useCase = new StoreDocumentUseCase(
             cipher: $cipher,
             storage: $storage,
@@ -60,6 +65,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $idGenerator,
             idValidator: $this->acceptingValidator(),
+            auditTrail: $auditTrail,
         );
 
         $document = $useCase->execute(new StoreDocumentCommand(
@@ -92,6 +98,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $this->createStub(DocumentIdGeneratorInterface::class),
             idValidator: $this->acceptingValidator(),
+            auditTrail: $this->createStub(AuditTrailInterface::class),
         );
 
         $this->expectException(HolderNotFoundException::class);
@@ -134,6 +141,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $this->createStub(DocumentIdGeneratorInterface::class),
             idValidator: $validator,
+            auditTrail: $this->createStub(AuditTrailInterface::class),
         );
 
         $this->expectException(\InvalidArgumentException::class);
@@ -171,6 +179,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $idGenerator,
             idValidator: $this->acceptingValidator(),
+            auditTrail: $this->createStub(AuditTrailInterface::class),
         );
 
         $this->expectException(\RuntimeException::class);
@@ -205,6 +214,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $idGenerator,
             idValidator: $this->acceptingValidator(),
+            auditTrail: $this->createStub(AuditTrailInterface::class),
         );
 
         $this->expectExceptionMessage('database down');
@@ -230,6 +240,7 @@ final class StoreDocumentUseCaseTest extends TestCase
             holders: $holders,
             idGenerator: $this->createStub(DocumentIdGeneratorInterface::class),
             idValidator: $this->acceptingValidator(),
+            auditTrail: $this->createStub(AuditTrailInterface::class),
         );
 
         $this->expectException(HolderNotActiveException::class);

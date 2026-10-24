@@ -10,7 +10,9 @@ use App\Domain\Exception\InvalidHolderStatusTransitionException;
 use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
+use App\Domain\ValueObject\AuditAction;
 use App\Domain\ValueObject\HolderId;
 
 /**
@@ -29,6 +31,7 @@ final readonly class AnonymizeHolderUseCase
         private DocumentRepositoryInterface $documents,
         private StorageGatewayInterface $storage,
         private IdValidatorInterface $idValidator,
+        private AuditTrailInterface $auditTrail,
     ) {}
 
     /**
@@ -55,6 +58,8 @@ final readonly class AnonymizeHolderUseCase
         }
 
         $this->holders->update($anonymized);
+
+        $this->auditTrail->record(AuditAction::HolderAnonymized, $holderId->value);
 
         return $anonymized;
     }

@@ -12,6 +12,7 @@ use App\Domain\Exception\InvalidHolderStatusTransitionException;
 use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
 use App\Domain\ValueObject\BirthDate;
 use App\Domain\ValueObject\DocumentId;
@@ -129,7 +130,7 @@ final class AnonymizeHolderUseCaseTest extends TestCase
         $validator = $this->createStub(IdValidatorInterface::class);
         $validator->method('isValid')->willReturn(true);
 
-        return new AnonymizeHolderUseCase($holders, $documents, $storage, $validator);
+        return new AnonymizeHolderUseCase($holders, $documents, $storage, $validator, $this->createStub(AuditTrailInterface::class));
     }
 
     private function holder(): Holder

@@ -11,8 +11,10 @@ use App\Domain\Port\Gateway\CipherGatewayInterface;
 use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\DocumentIdGeneratorInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
+use App\Domain\ValueObject\AuditAction;
 use App\Domain\ValueObject\DocumentId;
 use App\Domain\ValueObject\FileHash;
 use App\Domain\ValueObject\HolderId;
@@ -27,6 +29,7 @@ final readonly class StoreDocumentUseCase
         private HolderRepositoryInterface $holders,
         private DocumentIdGeneratorInterface $idGenerator,
         private IdValidatorInterface $idValidator,
+        private AuditTrailInterface $auditTrail,
     ) {}
 
     /**
@@ -71,6 +74,8 @@ final readonly class StoreDocumentUseCase
 
             throw $e;
         }
+
+        $this->auditTrail->record(AuditAction::DocumentStored, $id->value);
 
         return $document;
     }

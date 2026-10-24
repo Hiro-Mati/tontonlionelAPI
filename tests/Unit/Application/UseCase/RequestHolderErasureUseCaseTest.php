@@ -9,6 +9,7 @@ use App\Domain\Entity\Holder;
 use App\Domain\Exception\HolderNotFoundException;
 use App\Domain\Exception\InvalidHolderStatusTransitionException;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
+use App\Domain\Port\Service\AuditTrailInterface;
 use App\Domain\Port\Service\IdValidatorInterface;
 use App\Domain\ValueObject\BirthDate;
 use App\Domain\ValueObject\HolderId;
@@ -28,7 +29,7 @@ final class RequestHolderErasureUseCaseTest extends TestCase
             self::callback(static fn (Holder $holder): bool => HolderStatus::ErasureRequested === $holder->status()),
         );
 
-        $flagged = (new RequestHolderErasureUseCase($holders, $this->acceptingValidator()))->execute(self::HOLDER_ID);
+        $flagged = (new RequestHolderErasureUseCase($holders, $this->acceptingValidator(), $this->createStub(AuditTrailInterface::class)))->execute(self::HOLDER_ID);
 
         self::assertSame(HolderStatus::ErasureRequested, $flagged->status());
         self::assertNotNull($flagged->erasureRequestedAt());
@@ -42,7 +43,7 @@ final class RequestHolderErasureUseCaseTest extends TestCase
 
         $this->expectException(HolderNotFoundException::class);
 
-        (new RequestHolderErasureUseCase($holders, $this->acceptingValidator()))->execute(self::HOLDER_ID);
+        (new RequestHolderErasureUseCase($holders, $this->acceptingValidator(), $this->createStub(AuditTrailInterface::class)))->execute(self::HOLDER_ID);
     }
 
     public function testExecuteRejectsASecondRequestWithoutPersistingAnything(): void
@@ -53,7 +54,7 @@ final class RequestHolderErasureUseCaseTest extends TestCase
 
         $this->expectException(InvalidHolderStatusTransitionException::class);
 
-        (new RequestHolderErasureUseCase($holders, $this->acceptingValidator()))->execute(self::HOLDER_ID);
+        (new RequestHolderErasureUseCase($holders, $this->acceptingValidator(), $this->createStub(AuditTrailInterface::class)))->execute(self::HOLDER_ID);
     }
 
     public function testExecuteRejectsAMalformedId(): void
@@ -66,7 +67,7 @@ final class RequestHolderErasureUseCaseTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
 
-        (new RequestHolderErasureUseCase($holders, $validator))->execute('not-a-uuid');
+        (new RequestHolderErasureUseCase($holders, $validator, $this->createStub(AuditTrailInterface::class)))->execute('not-a-uuid');
     }
 
     private function holder(): Holder
