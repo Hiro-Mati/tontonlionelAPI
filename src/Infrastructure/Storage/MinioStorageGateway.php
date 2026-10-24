@@ -44,4 +44,16 @@ final readonly class MinioStorageGateway implements StorageGatewayInterface
             throw new \RuntimeException(\sprintf('Unable to read the document at "%s".', $key->value), previous: $e);
         }
     }
+
+    public function delete(DocumentId $id): void
+    {
+        $key = StorageKey::forDocument($id);
+
+        try {
+            // Flysystem's delete() is idempotent: a missing object is not an error.
+            $this->documentsStorage->delete($key->value);
+        } catch (FilesystemException $e) {
+            throw new \RuntimeException(\sprintf('Unable to delete the document at "%s".', $key->value), previous: $e);
+        }
+    }
 }

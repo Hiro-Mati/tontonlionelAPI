@@ -60,18 +60,29 @@ final class HolderTest extends TestCase
     {
         $this->expectException(InvalidHolderStatusTransitionException::class);
 
-        $this->register()->anonymize(new HolderName('REDACTED'));
+        $this->register()->anonymize();
     }
 
-    public function testAnonymizeReplacesTheNameAndStampsTheDate(): void
+    public function testAnonymizeRemovesIdentifyingDataAndStampsTheDate(): void
     {
-        $holder = $this->register()
-            ->requestErasure()
-            ->anonymize(new HolderName('REDACTED'));
+        $registered = $this->register();
+        $holder = $registered->requestErasure()->anonymize();
 
         self::assertSame(HolderStatus::Anonymized, $holder->status());
-        self::assertSame('REDACTED', (string) $holder->name());
+        self::assertSame(Holder::ANONYMIZED_NAME, (string) $holder->name());
+        self::assertNull($holder->birthDate());
+        self::assertNotNull($holder->erasureRequestedAt());
         self::assertNotNull($holder->anonymizedAt());
+        // Accountability data survives.
+        self::assertSame($registered->id(), $holder->id());
+        self::assertSame($registered->createdAt(), $holder->createdAt());
+    }
+
+    public function testAnonymizeCannotBeAppliedTwice(): void
+    {
+        $this->expectException(InvalidHolderStatusTransitionException::class);
+
+        $this->register()->requestErasure()->anonymize()->anonymize();
     }
 
     private function register(?\DateTimeImmutable $consentCollectedAt = null): Holder

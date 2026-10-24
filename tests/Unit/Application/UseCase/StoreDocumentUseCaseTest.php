@@ -7,6 +7,7 @@ namespace App\Tests\Unit\Application\UseCase;
 use App\Application\UseCase\StoreDocument\StoreDocumentCommand;
 use App\Application\UseCase\StoreDocument\StoreDocumentUseCase;
 use App\Domain\Entity\Holder;
+use App\Domain\Exception\HolderNotActiveException;
 use App\Domain\Exception\HolderNotFoundException;
 use App\Domain\Port\Gateway\CipherGatewayInterface;
 use App\Domain\Port\Gateway\StorageGatewayInterface;
@@ -138,5 +139,101 @@ final class StoreDocumentUseCaseTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $useCase->execute(new StoreDocumentCommand(holderId: 'not-a-uuid', content: 'plaintext content'));
+    }
+
+    public function testExecuteRemovesTheCiphertextWhenTheRecordCannotBePersisted(): void
+    {
+        $envelope = new EncryptionEnvelope(
+            payload: new EncryptedPayload('cipher-bytes'),
+            wrappedDataKey: new WrappedDataKey('wrapped-key-bytes'),
+        );
+        $cipher = $this->createStub(CipherGatewayInterface::class);
+        $cipher->method('encrypt')->willReturn($envelope);
+
+        $id = DocumentId::fromString('660e8400-e29b-41d4-a716-446655440000');
+        $idGenerator = $this->createStub(DocumentIdGeneratorInterface::class);
+        $idGenerator->method('generate')->willReturn($id);
+
+        $storage = $this->createMock(StorageGatewayInterface::class);
+        $storage->expects(self::once())->method('store');
+        $storage->expects(self::once())->method('delete')->with($id);
+
+        $documents = $this->createStub(DocumentRepositoryInterface::class);
+        $documents->method('add')->willThrowException(new \RuntimeException('database down'));
+
+        $holders = $this->createStub(HolderRepositoryInterface::class);
+        $holders->method('findById')->willReturn($this->holder());
+
+        $useCase = new StoreDocumentUseCase(
+            cipher: $cipher,
+            storage: $storage,
+            documents: $documents,
+            holders: $holders,
+            idGenerator: $idGenerator,
+            idValidator: $this->acceptingValidator(),
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('database down');
+
+        $useCase->execute(new StoreDocumentCommand(content: 'plaintext content', holderId: self::HOLDER_ID));
+    }
+
+    public function testTheOriginalFailureWinsWhenTheCompensationFailsToo(): void
+    {
+        $cipher = $this->createStub(CipherGatewayInterface::class);
+        $cipher->method('encrypt')->willReturn(new EncryptionEnvelope(
+            payload: new EncryptedPayload('cipher-bytes'),
+            wrappedDataKey: new WrappedDataKey('wrapped-key-bytes'),
+        ));
+        $idGenerator = $this->createStub(DocumentIdGeneratorInterface::class);
+        $idGenerator->method('generate')->willReturn(DocumentId::fromString('660e8400-e29b-41d4-a716-446655440000'));
+
+        $storage = $this->createStub(StorageGatewayInterface::class);
+        $storage->method('delete')->willThrowException(new \RuntimeException('bucket unreachable'));
+
+        $documents = $this->createStub(DocumentRepositoryInterface::class);
+        $documents->method('add')->willThrowException(new \RuntimeException('database down'));
+
+        $holders = $this->createStub(HolderRepositoryInterface::class);
+        $holders->method('findById')->willReturn($this->holder());
+
+        $useCase = new StoreDocumentUseCase(
+            cipher: $cipher,
+            storage: $storage,
+            documents: $documents,
+            holders: $holders,
+            idGenerator: $idGenerator,
+            idValidator: $this->acceptingValidator(),
+        );
+
+        $this->expectExceptionMessage('database down');
+
+        $useCase->execute(new StoreDocumentCommand(content: 'plaintext content', holderId: self::HOLDER_ID));
+    }
+
+    public function testExecuteRejectsAHolderWhoAskedForErasureBeforeTouchingStorage(): void
+    {
+        $cipher = $this->createMock(CipherGatewayInterface::class);
+        $cipher->expects(self::never())->method('encrypt');
+
+        $storage = $this->createMock(StorageGatewayInterface::class);
+        $storage->expects(self::never())->method('store');
+
+        $holders = $this->createStub(HolderRepositoryInterface::class);
+        $holders->method('findById')->willReturn($this->holder()->requestErasure());
+
+        $useCase = new StoreDocumentUseCase(
+            cipher: $cipher,
+            storage: $storage,
+            documents: $this->createStub(DocumentRepositoryInterface::class),
+            holders: $holders,
+            idGenerator: $this->createStub(DocumentIdGeneratorInterface::class),
+            idValidator: $this->acceptingValidator(),
+        );
+
+        $this->expectException(HolderNotActiveException::class);
+
+        $useCase->execute(new StoreDocumentCommand(content: 'plaintext content', holderId: self::HOLDER_ID));
     }
 }

@@ -22,6 +22,12 @@ use App\Domain\ValueObject\HolderStatus;
 final readonly class Holder
 {
     /**
+     * Name carried by every anonymized holder: it must not allow re-identification.
+     */
+    public const string ANONYMIZED_NAME = 'anonymized';
+
+    /**
+     * @param ?BirthDate          $birthDate          null once the holder has been anonymized
      * @param ?\DateTimeImmutable $consentCollectedAt when consent was collected; null when processing relies on another ground
      * @param ?\DateTimeImmutable $erasureRequestedAt when the data subject asked for erasure (GDPR art. 17); null otherwise
      * @param ?\DateTimeImmutable $anonymizedAt       when erasure was carried out; null otherwise
@@ -29,7 +35,7 @@ final readonly class Holder
     private function __construct(
         private HolderId $id,
         private HolderName $name,
-        private BirthDate $birthDate,
+        private ?BirthDate $birthDate,
         private HolderStatus $status,
         private \DateTimeImmutable $createdAt,
         private ?\DateTimeImmutable $consentCollectedAt,
@@ -80,12 +86,15 @@ final readonly class Holder
     }
 
     /**
-     * Carries out the erasure by anonymizing the holder. Only a holder with a
-     * pending erasure request can be anonymized.
+     * Carries out the erasure: the name is replaced by {@see ANONYMIZED_NAME}
+     * and the birth date dropped, so nothing identifying remains on the
+     * record (the identifier and the timestamps are kept for accountability).
+     * Only a holder with a pending erasure request can be anonymized; the
+     * caller is responsible for destroying the holder's documents.
      *
      * @throws InvalidHolderStatusTransitionException
      */
-    public function anonymize(HolderName $anonymizedName): self
+    public function anonymize(): self
     {
         if (HolderStatus::ErasureRequested !== $this->status) {
             throw new InvalidHolderStatusTransitionException($this->status, HolderStatus::Anonymized);
@@ -93,8 +102,8 @@ final readonly class Holder
 
         return new self(
             id: $this->id,
-            name: $anonymizedName,
-            birthDate: $this->birthDate,
+            name: new HolderName(self::ANONYMIZED_NAME),
+            birthDate: null,
             status: HolderStatus::Anonymized,
             createdAt: $this->createdAt,
             consentCollectedAt: $this->consentCollectedAt,
@@ -113,7 +122,7 @@ final readonly class Holder
         return $this->name;
     }
 
-    public function birthDate(): BirthDate
+    public function birthDate(): ?BirthDate
     {
         return $this->birthDate;
     }
