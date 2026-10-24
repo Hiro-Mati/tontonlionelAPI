@@ -42,6 +42,8 @@ final class DocumentResource
      */
     #[Assert\NotNull(message: 'A valid "file" upload is required.')]
     #[Assert\File]
+    // Input only: never serialised back in the 201 response nor in the output schema.
+    #[ApiProperty(readable: false)]
     public ?UploadedFile $file = null;
 
     /**

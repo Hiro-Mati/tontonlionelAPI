@@ -16,10 +16,12 @@ Bienvenue dans la documentation officielle du projet **Compliance Store**.
   * [ADR 0006: Strict Non-Nullable Value Objects and Domain-Level Optionality Handling](architecture/adr/0006-handling-optional-domain-attributes-and-nullability.md)
   * [ADR 0007: Declarative URI Variables Contract in API Platform State Providers via PHPDoc Shapes](architecture/adr/0007-declarative-uri-variables-contract-in-state-providers.md)
   * [ADR 0008: Infrastructure Refactoring](architecture/adr/0008-infra-refactorisation.md)
-* **Workflows & Pipelines** :
-  * [Pipeline d'Ingestion & Redaction PII](architecture/workflows/ingestion.md)
-  * [Pipeline de Consultation & Déchiffrement](architecture/workflows/consultation.md)
-* **[Spécifications de l'API REST](architecture/api/endpoints.md)** : Entrées/Sorties, DTOs et codes HTTP.
+  * [ADR 0009: Compliance Relevance of Document's Value Objects](architecture/adr/0009-document-value-objects-compliance-relevance.md)
+  * [ADR 0010: Binary Responses Escape the State Provider Contract](architecture/adr/0010-binary-responses-escape-state-provider-contract.md)
+  * [ADR 0011: Binary Responses Are Served by State Providers Returning a Response](architecture/adr/0011-binary-responses-served-by-state-providers.md)
+  * [ADR 0012: Regulation Engine Extracted as an External, Reusable Provider](architecture/adr/0012-external-regulation-engine-as-provider.md)
+* **Spécifications de l'API REST** : la documentation OpenAPI est générée par API Platform et servie sur `/api` (Swagger UI) et `/api/docs.json`. Les requêtes d'exemple sont dans `tests/http/`.
+* **[Documents correctifs](correctifs/README.md)** : interventions du 24 octobre 2026 (stack Docker, Doctrine, PHPStan, améliorations, audit) et journal de bord.
 
 ---
 

@@ -11,6 +11,7 @@ use App\Domain\ValueObject\BirthDate;
 use App\Domain\ValueObject\HolderId;
 use App\Domain\ValueObject\HolderName;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class DocumentApiTest extends ApiTestCase
@@ -39,6 +40,9 @@ final class DocumentApiTest extends ApiTestCase
         ));
         $entityManager->flush();
         $entityManager->clear();
+
+        // The test env writes ciphertexts to a local directory (flysystem.yaml): start from an empty one.
+        (new Filesystem())->remove(self::getContainer()->getParameter('kernel.project_dir').'/var/test_storage');
     }
 
     public function testItStoresADocument(): void

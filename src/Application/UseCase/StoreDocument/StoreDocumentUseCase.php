@@ -11,6 +11,7 @@ use App\Domain\Port\Gateway\StorageGatewayInterface;
 use App\Domain\Port\Repository\DocumentRepositoryInterface;
 use App\Domain\Port\Repository\HolderRepositoryInterface;
 use App\Domain\Port\Service\DocumentIdGeneratorInterface;
+use App\Domain\Port\Service\IdValidatorInterface;
 use App\Domain\ValueObject\FileHash;
 use App\Domain\ValueObject\HolderId;
 
@@ -22,14 +23,16 @@ final readonly class StoreDocumentUseCase
         private DocumentRepositoryInterface $documents,
         private HolderRepositoryInterface $holders,
         private DocumentIdGeneratorInterface $idGenerator,
+        private IdValidatorInterface $idValidator,
     ) {}
 
     /**
-     * @throws HolderNotFoundException when the document references an unknown holder
+     * @throws \InvalidArgumentException when the holder id is not a valid UUID
+     * @throws HolderNotFoundException  when the document references an unknown holder
      */
     public function execute(StoreDocumentCommand $command): Document
     {
-        $holderId = HolderId::fromString($command->holderId);
+        $holderId = HolderId::fromString($command->holderId, $this->idValidator);
 
         if (null === $this->holders->findById($holderId)) {
             throw new HolderNotFoundException($holderId);

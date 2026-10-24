@@ -1,8 +1,5 @@
 {
 	skip_install_trust
-	# Disable automatic HTTP to HTTPS redirection to allow local HTTP testing
-	# which avoids SSLException (internal_error) with JetBrains HTTP Client and self-signed certificates.
-	auto_https disable_redirects
 
 	{$CADDY_GLOBAL_OPTIONS}
 
@@ -14,8 +11,6 @@
 {$CADDY_EXTRA_CONFIG}
 
 {$SERVER_NAME:localhost} {
-	tls internal
-
 	log {
 		{$CADDY_SERVER_LOG_OPTIONS}
 		# Redact the authorization query parameter that can be set by Mercure
@@ -30,10 +25,18 @@
 	encode zstd br gzip
 
 	mercure {
-		# Publisher JWT key
-		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
-		# Subscriber JWT key
-		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
+		# Trusted issuer: the iss claim of the tokens must match (Mercure >= 0.21 syntax,
+		# root-level publisher_jwt/subscriber_jwt are only accepted in compatibility mode).
+		issuer {$MERCURE_TRUSTED_ISSUERS:https://localhost} {
+			# Publisher JWT key
+			publisher {
+				jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
+			}
+			# Subscriber JWT key
+			subscriber {
+				jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
+			}
+		}
 		# Allow anonymous subscribers (double-check that it's what you want)
 		anonymous
 		# Enable the subscription API (double-check that it's what you want)

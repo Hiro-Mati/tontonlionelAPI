@@ -37,7 +37,7 @@ src/
 To explore the detailed architecture documentation:
 * 📘 [Documentation Table of Contents](docs/README.md)
 * 📜 [Architecture Decision Records (ADRs)](docs/architecture/adr/)
-* 🔄 [Ingestion & Consultation Workflows](docs/architecture/workflows/)
+* 🩹 [Documents correctifs](docs/correctifs/README.md) (interventions du 24 octobre 2026, journal de bord)
 
 ---
 
@@ -58,13 +58,14 @@ Map `compliance-store.loc` to `127.0.0.1` on your development host:
 
 1. **Build Docker images**:
    ```bash
-   docker compose build --pull --no-cache
+   make build
    ```
 
 2. **Start all services** (FrankenPHP API + PostgreSQL + MinIO S3):
    ```bash
-   docker compose up -d
+   make up
    ```
+   `make` loads `.env.local` before calling Docker Compose; a bare `docker compose up` does not. Use that file to override published ports when they are taken on your host, for example `POSTGRES_PORT=5434`.
 
 3. **Access the application**:
    * **API Platform / Swagger UI**: `https://compliance-store.loc/api` (or `http://compliance-store.loc/api`)
@@ -72,7 +73,7 @@ Map `compliance-store.loc` to `127.0.0.1` on your development host:
 
 4. **Stop the environment**:
    ```bash
-   docker compose down
+   make down
    ```
 
 ---

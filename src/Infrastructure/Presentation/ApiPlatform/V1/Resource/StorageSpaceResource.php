@@ -32,6 +32,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: CreateStorageSpaceProcessor::class,
         ),
         new GetCollection(
+            // The use case returns the whole table: do not advertise page/itemsPerPage parameters.
+            paginationEnabled: false,
             uriTemplate: '/storage-spaces',
             openapi: new Operation(
                 tags: ['V1 - Storage Spaces'],

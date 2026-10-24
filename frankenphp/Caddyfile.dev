@@ -28,11 +28,11 @@
 	encode zstd br gzip
 
 	mercure {
-		# Hub nomme : Mercure >= 0.21 n'accepte qu'un seul hub sans nom par configuration, et ce
-		# snippet est importe deux fois (site HTTPS + site HTTP). Un hub nomme peut etre partage.
+		# Hub nommé : Mercure >= 0.21 n'accepte qu'un seul hub sans nom par configuration, et ce
+		# snippet est importé deux fois (site HTTPS + site HTTP). Un hub nommé peut être partagé.
 		name default
-		# Emetteur de confiance : le claim iss des jetons doit correspondre (mode moderne, remplace
-		# publisher_jwt/subscriber_jwt au niveau racine qui ne sont plus acceptes qu'en mode compat).
+		# Émetteur de confiance : le claim iss des jetons doit correspondre (mode moderne, remplace
+		# publisher_jwt/subscriber_jwt au niveau racine qui ne sont plus acceptés qu'en mode compat).
 		issuer {$MERCURE_TRUSTED_ISSUERS:https://localhost} {
 			# Publisher JWT key
 			publisher {

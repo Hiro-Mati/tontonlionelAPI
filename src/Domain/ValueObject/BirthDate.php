@@ -16,6 +16,9 @@ final readonly class BirthDate
 
     public function __construct(\DateTimeImmutable $value)
     {
+        // Normalise to UTC first so the calendar day never depends on the
+        // timezone the caller happened to use.
+        $value = $value->setTimezone(new \DateTimeZone('UTC'));
         $today = new \DateTimeImmutable('today', new \DateTimeZone('UTC'));
 
         if ($value->format('Y-m-d') >= $today->format('Y-m-d')) {

@@ -18,6 +18,12 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/Domain/Entity/'
+            - '../src/Domain/Exception/'
+            - '../src/Domain/ValueObject/'
+            - '../src/Application/UseCase/*/*Command.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -41,6 +47,12 @@ services:
     App\Infrastructure\Gateway\SodiumCipherGateway:
         arguments:
             $masterKey: '%env(base64:DOCUMENT_MASTER_KEY)%'
+
+    # GET /v1/health reports the real kernel environment and the API version declared in api_platform.yaml.
+    App\Application\UseCase\CheckSystemStatus\CheckSystemStatusUseCase:
+        arguments:
+            $environment: '%kernel.environment%'
+            $version: '%api_platform.version%'
 
 when@test:
     services:
