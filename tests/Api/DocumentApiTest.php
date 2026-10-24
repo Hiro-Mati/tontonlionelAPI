@@ -117,4 +117,58 @@ final class DocumentApiTest extends ApiTestCase
 
         self::assertResponseStatusCodeSame(422);
     }
+
+    public function testItRejectsAFileWhoseContentIsNotAnAllowedType(): void
+    {
+        $client = self::createAuthenticatedClient();
+        $path = tempnam(sys_get_temp_dir(), 'doc');
+        self::assertNotFalse($path);
+        file_put_contents($path, 'plain text pretending to be a picture');
+
+        try {
+            $response = $client->request('POST', '/api/v1/documents', [
+                'headers' => ['Content-Type' => 'multipart/form-data'],
+                'extra' => [
+                    'parameters' => ['holderId' => self::HOLDER_ID],
+                    'files' => [
+                        // The client-declared PNG name and type are ignored: the content is sniffed.
+                        'file' => new UploadedFile($path, 'passport.png', 'image/png', null, true),
+                    ],
+                ],
+            ]);
+
+            self::assertResponseStatusCodeSame(422);
+            self::assertSame('file', $response->toArray(false)['violations'][0]['propertyPath']);
+            self::assertStringContainsString('not accepted', $response->toArray(false)['violations'][0]['message']);
+        } finally {
+            @unlink($path);
+        }
+    }
+
+    public function testItRejectsAFileLargerThanTheConfiguredLimit(): void
+    {
+        $client = self::createAuthenticatedClient();
+        $path = tempnam(sys_get_temp_dir(), 'doc');
+        self::assertNotFalse($path);
+        // A real PNG (valid signature) padded above DOCUMENT_MAX_SIZE=300k (.env.test).
+        file_put_contents($path, file_get_contents(self::FIXTURE_PATH).str_repeat("\0", 200 * 1024));
+
+        try {
+            $response = $client->request('POST', '/api/v1/documents', [
+                'headers' => ['Content-Type' => 'multipart/form-data'],
+                'extra' => [
+                    'parameters' => ['holderId' => self::HOLDER_ID],
+                    'files' => [
+                        'file' => new UploadedFile($path, 'passport.png', 'image/png', null, true),
+                    ],
+                ],
+            ]);
+
+            self::assertResponseStatusCodeSame(422);
+            self::assertSame('file', $response->toArray(false)['violations'][0]['propertyPath']);
+            self::assertStringContainsString('too large', $response->toArray(false)['violations'][0]['message']);
+        } finally {
+            @unlink($path);
+        }
+    }
 }

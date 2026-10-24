@@ -40,6 +40,8 @@ final class DocumentResource
      * With `deserialize: false`, API Platform never populates these fields
      * itself: DocumentProcessor reads them from the raw request and
      * validates them explicitly against these constraints before use.
+     * The size and MIME type limits (DOCUMENT_MAX_SIZE, DOCUMENT_MIME_TYPES)
+     * are deployment settings, checked by the processor at runtime.
      */
     #[Assert\NotNull(message: 'A valid "file" upload is required.')]
     #[Assert\File]

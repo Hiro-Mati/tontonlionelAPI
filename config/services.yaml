@@ -45,6 +45,12 @@ services:
         arguments:
             $documentsStorage: '@documents.storage'
 
+    # Upload limits of POST /v1/documents (see .env for the relation with PHP and Caddy limits).
+    App\Infrastructure\Presentation\ApiPlatform\V1\State\DocumentProcessor:
+        arguments:
+            $maxUploadSize: '%env(DOCUMENT_MAX_SIZE)%'
+            $allowedMimeTypes: '%env(csv:DOCUMENT_MIME_TYPES)%'
+
     App\Infrastructure\Gateway\SodiumCipherGateway:
         arguments:
             $masterKey: '%env(base64:DOCUMENT_MASTER_KEY)%'

@@ -24,7 +24,19 @@
 	root /app/public
 	encode zstd br gzip
 
+	# Mirrors post_max_size (frankenphp/conf.d/10-app.ini): larger uploads get a 413 without reaching PHP.
+	# PHP itself only emits a warning when Content-Length exceeds post_max_size, which the worker
+	# runtime turns into a fatal error, so the body is checked here first.
+	@tooLarge expression `{http.request.header.Content-Length} != "" && int({http.request.header.Content-Length}) > 16777216`
+	respond @tooLarge "Payload too large: the body exceeds 16 MiB." 413
+	request_body {
+		max_size 16MiB
+	}
+
 	mercure {
+		# Named hub: SERVER_NAME lists several hosts (compose.yaml adds php:80), which gives several
+		# servers sharing this block, and Mercure >= 0.21 allows a single unnamed hub per configuration.
+		name default
 		# Trusted issuer: the iss claim of the tokens must match (Mercure >= 0.21 syntax,
 		# root-level publisher_jwt/subscriber_jwt are only accepted in compatibility mode).
 		issuer {$MERCURE_TRUSTED_ISSUERS:https://localhost} {

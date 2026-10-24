@@ -27,6 +27,15 @@
 	root /app/public
 	encode zstd br gzip
 
+	# Mirrors post_max_size (frankenphp/conf.d/10-app.ini): larger uploads get a 413 without reaching PHP.
+	# PHP itself only emits a warning when Content-Length exceeds post_max_size, which the worker
+	# runtime turns into a fatal error, so the body is checked here first.
+	@tooLarge expression `{http.request.header.Content-Length} != "" && int({http.request.header.Content-Length}) > 16777216`
+	respond @tooLarge "Payload too large: the body exceeds 16 MiB." 413
+	request_body {
+		max_size 16MiB
+	}
+
 	mercure {
 		# Hub nommé : Mercure >= 0.21 n'accepte qu'un seul hub sans nom par configuration, et ce
 		# snippet est importé deux fois (site HTTPS + site HTTP). Un hub nommé peut être partagé.
