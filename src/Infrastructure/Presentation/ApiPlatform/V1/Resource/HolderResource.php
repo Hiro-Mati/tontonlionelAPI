@@ -6,9 +6,11 @@ namespace App\Infrastructure\Presentation\ApiPlatform\V1\Resource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation;
 use App\Domain\Entity\Holder;
+use App\Infrastructure\Presentation\ApiPlatform\V1\State\GetHolderProvider;
 use App\Infrastructure\Presentation\ApiPlatform\V1\State\HolderProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,6 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
             ),
             deserialize: false,
             processor: HolderProcessor::class,
+        ),
+        new Get(
+            uriTemplate: '/holders/{id}',
+            openapi: new Operation(
+                tags: ['V1 - Holders'],
+                summary: 'Get a holder',
+                description: 'Retrieves a single holder by id.',
+            ),
+            provider: GetHolderProvider::class,
         ),
     ],
     routePrefix: '/v1',
@@ -49,6 +60,12 @@ final class HolderResource
 
     public ?string $createdAt = null;
 
+    public ?string $consentCollectedAt = null;
+
+    public ?string $erasureRequestedAt = null;
+
+    public ?string $anonymizedAt = null;
+
     public static function fromEntity(Holder $holder): self
     {
         $resource = new self();
@@ -57,6 +74,9 @@ final class HolderResource
         $resource->birthDate = (string) $holder->birthDate();
         $resource->status = $holder->status()->value;
         $resource->createdAt = $holder->createdAt()->format(\DateTimeInterface::ATOM);
+        $resource->consentCollectedAt = $holder->consentCollectedAt()?->format(\DateTimeInterface::ATOM);
+        $resource->erasureRequestedAt = $holder->erasureRequestedAt()?->format(\DateTimeInterface::ATOM);
+        $resource->anonymizedAt = $holder->anonymizedAt()?->format(\DateTimeInterface::ATOM);
 
         return $resource;
     }

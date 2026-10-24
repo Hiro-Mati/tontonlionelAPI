@@ -6,6 +6,10 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Domain\Entity\Document;
+use App\Domain\Entity\Holder;
+use App\Domain\ValueObject\BirthDate;
+use App\Domain\ValueObject\HolderId;
+use App\Domain\ValueObject\HolderName;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -17,12 +21,24 @@ final class DocumentApiTest extends ApiTestCase
 
     private const HOLDER_ID = '770e8400-e29b-41d4-a716-446655440111';
 
+    private const UNKNOWN_HOLDER_ID = '00000000-0000-0000-0000-000000000000';
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $entityManager->createQuery('DELETE FROM '.Document::class)->execute();
+        $entityManager->createQuery('DELETE FROM '.Holder::class)->execute();
+
+        // A document can only be stored for a registered holder.
+        $entityManager->persist(Holder::register(
+            id: HolderId::fromString(self::HOLDER_ID),
+            name: new HolderName('Ada Lovelace'),
+            birthDate: new BirthDate(new \DateTimeImmutable('1990-01-01', new \DateTimeZone('UTC'))),
+        ));
+        $entityManager->flush();
+        $entityManager->clear();
     }
 
     public function testItStoresADocument(): void
@@ -69,6 +85,23 @@ final class DocumentApiTest extends ApiTestCase
         $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
             'extra' => [
+                'files' => [
+                    'file' => new UploadedFile(self::FIXTURE_PATH, 'passport.png', 'image/png', null, true),
+                ],
+            ],
+        ]);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testItRejectsAnUnknownHolder(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/api/v1/documents', [
+            'headers' => ['Content-Type' => 'multipart/form-data'],
+            'extra' => [
+                'parameters' => ['holderId' => self::UNKNOWN_HOLDER_ID],
                 'files' => [
                     'file' => new UploadedFile(self::FIXTURE_PATH, 'passport.png', 'image/png', null, true),
                 ],

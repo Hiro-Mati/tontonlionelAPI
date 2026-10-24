@@ -40,6 +40,44 @@ final class HolderApiTest extends ApiTestCase
         self::assertSame('Ada Lovelace', $data['holderName']);
         self::assertSame('1990-01-01', $data['birthDate']);
         self::assertSame('active', $data['status']);
+        self::assertNull($data['consentCollectedAt']);
+        self::assertNull($data['erasureRequestedAt']);
+        self::assertNull($data['anonymizedAt']);
+    }
+
+    public function testItGetsARegisteredHolder(): void
+    {
+        $client = static::createClient();
+
+        $created = $client->request('POST', '/api/v1/holders', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => self::ADA,
+        ])->toArray();
+
+        $response = $client->request('GET', '/api/v1/holders/'.$created['id']);
+
+        self::assertResponseStatusCodeSame(200);
+
+        $data = $response->toArray();
+        self::assertSame($created['id'], $data['id']);
+        self::assertSame('Ada Lovelace', $data['holderName']);
+        self::assertSame('1990-01-01', $data['birthDate']);
+        self::assertSame('active', $data['status']);
+        self::assertSame($created['createdAt'], $data['createdAt']);
+    }
+
+    public function testItReturns404ForAnUnknownHolder(): void
+    {
+        static::createClient()->request('GET', '/api/v1/holders/00000000-0000-0000-0000-000000000000');
+
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testItReturns404ForAnInvalidHolderId(): void
+    {
+        static::createClient()->request('GET', '/api/v1/holders/not-a-uuid');
+
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testItRejectsMissingFields(): void

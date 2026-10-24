@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `Holder` aggregate persisted in full (`birth_date`, `status`, GDPR timestamps) with a dedicated `birth_date` Doctrine type; `GET /v1/holders/{id}` exposed through `GetHolderUseCase` and `GetHolderProvider`.
+- `Document.holderId` persisted (`holder_id` column, indexed); `StoreDocumentUseCase` rejects an unknown holder with `HolderNotFoundException` (422 on `POST /v1/documents`).
 - `Document` entity and Value Objects (`DocumentId`, `OwnerId`, `DocumentMetadata`, `FileHash`, `EncryptedPayload`, `WrappedDataKey`, `StorageKey`, `EncryptionEnvelope`).
 - `SodiumCipherGateway` implementation for Libsodium envelope encryption.
 - `MinioStorageGateway` implementation for S3-compatible document storage (Flysystem).
@@ -15,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `RegulatoryScope` feature (entity, value objects, use cases, repository, API resource, `DocumentComplianceChecker` domain service and `NonCompliantDocumentException`): never released, dropped before its first stable version.
+
+### Changed
+- Dependencies: Symfony 8.1.9, Doctrine ORM 3.7.5 and DBAL 4.5.0, PHPStan 2.3.1, PHPUnit 13.4.3, Deptrac 4.7.2. API Platform stays on 4.3.
+- `HolderRepository` moved to `Infrastructure\Persistence\Doctrine` next to the other Doctrine repositories.
 
 ### Fixed
 - `POST /v1/documents` answered 500 since `StoreDocumentCommand` requires a `holderId`: the processor now reads a `holderId` multipart field and validates it (`NotBlank`, `Uuid`).

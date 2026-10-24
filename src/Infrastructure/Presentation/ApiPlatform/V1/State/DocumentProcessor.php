@@ -9,6 +9,7 @@ use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\Validator\ValidatorInterface;
 use App\Application\UseCase\StoreDocument\StoreDocumentCommand;
 use App\Application\UseCase\StoreDocument\StoreDocumentUseCase;
+use App\Domain\Exception\HolderNotFoundException;
 use App\Infrastructure\Presentation\ApiPlatform\V1\Resource\DocumentResource;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -46,7 +47,9 @@ final readonly class DocumentProcessor implements ProcessorInterface
                 content: $input->file->getContent(),
                 holderId: $input->holderId,
             ));
-        } catch (\InvalidArgumentException $e) {
+        } catch (HolderNotFoundException|\InvalidArgumentException $e) {
+            // An unknown holder makes the request unprocessable: the resource being
+            // created is the document, so this is not a 404 on the request URI.
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         }
 

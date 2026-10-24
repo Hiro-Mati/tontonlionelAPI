@@ -28,7 +28,9 @@ doctrine:
             holder_id:
                 class: App\Infrastructure\Persistence\Doctrine\Type\HolderIdType
             holder_name:
-                class:  App\Infrastructure\Persistence\Doctrine\Type\HolderNameType
+                class: App\Infrastructure\Persistence\Doctrine\Type\HolderNameType
+            birth_date:
+                class: App\Infrastructure\Persistence\Doctrine\Type\BirthDateType
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore

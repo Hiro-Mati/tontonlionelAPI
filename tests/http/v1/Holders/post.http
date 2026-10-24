@@ -1,10 +1,17 @@
-### Creation d'un Holder
+# @name registerHolder
+### Register a holder (V1)
 POST {{apiUrl}}/holders
 Content-Type: application/json
 Accept: application/ld+json
 
 {
-    "holderName": "Lionled",
-    "birthDate": "string",
-    "createdAt": "string"
+    "holderName": "Ada Lovelace",
+    "birthDate": "1990-01-01"
 }
+
+###
+
+# @name getHolder
+### Get a holder by id (V1) — replace the id with one returned by registerHolder
+GET {{apiUrl}}/holders/770e8400-e29b-41d4-a716-446655440111
+Accept: application/ld+json
