@@ -16,6 +16,8 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | 6 | [Améliorations](06-ameliorations.md) | Dépendances à jour, persistance complète de `Holder`, `Document.holderId`, `GET /v1/holders/{id}` |
 | 7 | [Audit complet du projet](07-audit.md) | Revue de chaque dossier et fichier, 60 corrections (sécurité Compose, Caddyfile prod, types Doctrine, chiffrement, outillage, docs), points de conception restants |
 | 8 | [Corrections prioritaires](08-corrections-prioritaires.md) | Clés d'API et rôles, limites de dépôt, effacement RGPD persistable avec suppression cryptographique, compensation du stockage, lecture et téléchargement des documents, journal d'audit |
+| 9 | [Compliance Store expliqué à tout le monde](09-presentation-generale.md) | Intention de l'application sans jargon : problème résolu, fonctions, rôles, protections, limites actuelles |
+| 10 | [Documentation technique](10-documentation-technique.md) | Architecture, modèle de données, cas d'usage, chiffrement, authentification, référence de l'API, configuration, tests, exploitation |
 | — | [Journal de bord](JOURNAL.md) | Chronologie horodatée de toutes les actions |
 
 ## Résumé en une page

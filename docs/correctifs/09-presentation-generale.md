@@ -1,6 +1,6 @@
 # Compliance Store expliqué à tout le monde
 
-*Ce document s'adresse à toute personne qui veut comprendre ce que fait l'application sans lire une ligne de code : direction, métier, juridique, support, nouveaux arrivants. La version technique se trouve dans [documentation-technique.md](documentation-technique.md).*
+*Ce document s'adresse à toute personne qui veut comprendre ce que fait l'application sans lire une ligne de code : direction, métier, juridique, support, nouveaux arrivants. La version technique se trouve dans [10-documentation-technique.md](10-documentation-technique.md).*
 
 ---
 
@@ -138,7 +138,7 @@ Pour éviter tout malentendu, voici les limites actuelles, documentées dans les
 - **Pas de limitation de débit** : un client autorisé peut appeler le service autant qu'il le souhaite.
 - **Pas d'interface graphique** : seuls des logiciels dialoguent avec l'application.
 
-Ces points sont listés comme décisions à prendre dans [correctifs/07-audit.md](correctifs/07-audit.md) (section 7.8) et [correctifs/08-corrections-prioritaires.md](correctifs/08-corrections-prioritaires.md) (section 8.8).
+Ces points sont listés comme décisions à prendre dans [07-audit.md](07-audit.md) (section 7.8) et [08-corrections-prioritaires.md](08-corrections-prioritaires.md) (section 8.8).
 
 ---
 

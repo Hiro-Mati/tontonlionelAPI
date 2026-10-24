@@ -58,7 +58,7 @@ src/
 ```
 
 Detailed documentation:
-* 🧭 [Compliance Store expliqué à tout le monde](docs/presentation-generale.md) (plain-language overview, in French) and [Documentation technique](docs/documentation-technique.md) (architecture, data model, API reference, operations, in French)
+* 🧭 [Compliance Store expliqué à tout le monde](docs/correctifs/09-presentation-generale.md) (plain-language overview, in French) and [Documentation technique](docs/correctifs/10-documentation-technique.md) (architecture, data model, API reference, operations, in French)
 * 📘 [Documentation table of contents](docs/README.md)
 * 📜 [Architecture Decision Records](docs/architecture/adr/) (13 ADRs, from envelope encryption to API key authentication)
 * 🩹 [Documents correctifs](docs/correctifs/README.md): report of the 24 October 2026 interventions, logbook, team checklist (in French)

@@ -1,6 +1,6 @@
 # Compliance Store : documentation technique
 
-*Ce document décrit comment le code réalise ce que [presentation-generale.md](presentation-generale.md) explique en termes simples. Il s'adresse aux développeurs, intégrateurs et exploitants. Les choix d'architecture sont justifiés en détail dans les [ADR](architecture/adr/).*
+*Ce document décrit comment le code réalise ce que [09-presentation-generale.md](09-presentation-generale.md) explique en termes simples. Il s'adresse aux développeurs, intégrateurs et exploitants. Les choix d'architecture sont justifiés en détail dans les [ADR](../architecture/adr/).*
 
 État de référence : PHP 8.5, Symfony 8.1, API Platform 4.3, PostgreSQL 16, 159 tests PHPUnit, PHPStan niveau max, Deptrac 0 violation.
 
@@ -235,7 +235,7 @@ Format d'erreur : RFC 9457, `application/problem+json`. Format nominal : JSON-LD
 
 Toute route : 401 sans clé valide, 403 rôle insuffisant.
 
-Les fichiers `tests/http/**/*.http` donnent un exemple exécutable de chaque appel ; voir [tests/http/README.md](../tests/http/README.md).
+Les fichiers `tests/http/**/*.http` donnent un exemple exécutable de chaque appel ; voir [tests/http/README.md](../../tests/http/README.md).
 
 ---
 
@@ -316,7 +316,7 @@ make sf c="app:api-client:create back-office --role=ROLE_ADMIN"   # clé affich�
 
 ### 12.3 Production
 
-`compose.prod.yaml` rend obligatoires les quatre secrets (clé maître, identifiants S3, mot de passe PostgreSQL). Caddy obtient les certificats TLS automatiquement pour `SERVER_NAME`. La première clé d'administrateur se crée avec la commande console dans le conteneur. Détails dans [docker-infra/production.md](docker-infra/production.md).
+`compose.prod.yaml` rend obligatoires les quatre secrets (clé maître, identifiants S3, mot de passe PostgreSQL). Caddy obtient les certificats TLS automatiquement pour `SERVER_NAME`. La première clé d'administrateur se crée avec la commande console dans le conteneur. Détails dans [docker-infra/production.md](../docker-infra/production.md).
 
 ### 12.4 Sauvegardes
 
@@ -326,7 +326,7 @@ Trois éléments doivent être sauvegardés **ensemble** : la base PostgreSQL, l
 
 ## 13. Points ouverts et décisions à prendre
 
-Détaillés dans [correctifs/07-audit.md](correctifs/07-audit.md) (§ 7.8) et [correctifs/08-corrections-prioritaires.md](correctifs/08-corrections-prioritaires.md) (§ 8.8) :
+Détaillés dans [07-audit.md](07-audit.md) (§ 7.8) et [08-corrections-prioritaires.md](08-corrections-prioritaires.md) (§ 8.8) :
 
 - Rattacher `IdentityDocument` à un `Holder` et éventuellement à un `Document`.
 - Donner un rôle réel à `StorageSpace` (choix du bucket ou du préfixe par document).
@@ -343,9 +343,9 @@ Détaillés dans [correctifs/07-audit.md](correctifs/07-audit.md) (§ 7.8) et [c
 
 | Besoin | Document |
 |--------|----------|
-| Comprendre sans jargon | [presentation-generale.md](presentation-generale.md) |
-| Installer et lancer | [README principal](../README.md) |
-| Pourquoi tel choix | [ADR 0001 à 0013](architecture/adr/) |
-| Ce qui a été corrigé le 24 octobre 2026 et pourquoi | [correctifs/README.md](correctifs/README.md) |
-| Exemples d'appels | [tests/http/README.md](../tests/http/README.md) |
-| Docker, TLS, Xdebug, dépannage | [docker-infra/](docker-infra/) |
+| Comprendre sans jargon | [09-presentation-generale.md](09-presentation-generale.md) |
+| Installer et lancer | [README principal](../../README.md) |
+| Pourquoi tel choix | [ADR 0001 à 0013](../architecture/adr/) |
+| Ce qui a été corrigé le 24 octobre 2026 et pourquoi | [README.md](README.md) |
+| Exemples d'appels | [tests/http/README.md](../../tests/http/README.md) |
+| Docker, TLS, Xdebug, dépannage | [docker-infra/](../docker-infra/) |
