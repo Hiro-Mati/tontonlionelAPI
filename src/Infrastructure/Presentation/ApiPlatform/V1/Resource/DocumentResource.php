@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             openapi: new Operation(
                 tags: ['V1 - Documents'],
                 summary: 'Store a document',
-                description: 'Ingests a document, encrypts it (envelope encryption) and stores it on the Zero Trust storage backend.',
+                description: 'Ingests a document on behalf of a holder, encrypts it (envelope encryption) and stores it on the Zero Trust storage backend.',
             ),
             deserialize: false,
             processor: DocumentProcessor::class,
@@ -44,6 +44,14 @@ final class DocumentResource
     #[Assert\File]
     public ?UploadedFile $file = null;
 
+    /**
+     * Identifier of the Holder (data subject) the document belongs to,
+     * sent as a regular multipart field next to the file.
+     */
+    #[Assert\NotBlank(message: 'A "holderId" is required.')]
+    #[Assert\Uuid(message: 'The "holderId" must be a valid UUID.')]
+    public ?string $holderId = null;
+
     public ?string $fileHash = null;
 
     public ?string $createdAt = null;
@@ -52,6 +60,7 @@ final class DocumentResource
     {
         $resource = new self();
         $resource->id = $document->id()->value;
+        $resource->holderId = $document->holderId()->value;
         $resource->fileHash = $document->fileHash()->value;
         $resource->createdAt = $document->createdAt()->format(\DateTimeInterface::ATOM);
 

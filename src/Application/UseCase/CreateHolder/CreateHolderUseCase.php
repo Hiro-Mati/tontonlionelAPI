@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Application\UseCase\CreateHolder;
+declare(strict_types=1);
 
+namespace App\Application\UseCase\CreateHolder;
 
 use App\Domain\Entity\Holder;
 use App\Domain\Exception\HolderAlreadyExistsException;
@@ -14,27 +15,32 @@ use App\Domain\ValueObject\HolderName;
 final readonly class CreateHolderUseCase
 {
     public function __construct(
-        private GeneratorInterface $generatorUuid,
-        private HolderRepositoryInterface $holderRepository
-    ){}
+        private GeneratorInterface $idGenerator,
+        private HolderRepositoryInterface $holders,
+    ) {}
 
-    public function execute(CreateHolderCommand $command) : void
+    /**
+     * @throws HolderAlreadyExistsException
+     * @throws \InvalidArgumentException when the name or the birth date is invalid
+     */
+    public function execute(CreateHolderCommand $command): Holder
     {
-        $value = $this->generatorUuid->generate();
-        $holderId = HolderId::fromString($value);
-        $birthDate = BirthDate::fromString($command->birthDate);
+        $holderId = HolderId::fromString($this->idGenerator->generate());
         $holderName = new HolderName($command->holderName);
+        $birthDate = BirthDate::fromString($command->birthDate);
 
-        if (null !== $this->holderRepository->findById($holderId)) {
+        if (null !== $this->holders->findById($holderId)) {
             throw new HolderAlreadyExistsException($holderId);
         }
 
         $holder = Holder::register(
-            $holderId,
-            $holderName,
-            $birthDate
+            id: $holderId,
+            name: $holderName,
+            birthDate: $birthDate,
         );
 
-        $this->holderRepository->add($holder);
+        $this->holders->add($holder);
+
+        return $holder;
     }
 }

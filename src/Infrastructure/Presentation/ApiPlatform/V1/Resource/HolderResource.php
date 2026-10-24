@@ -7,15 +7,11 @@ namespace App\Infrastructure\Presentation\ApiPlatform\V1\Resource;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Domain\Entity\Holder;
 use App\Infrastructure\Presentation\ApiPlatform\V1\State\HolderProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\OpenApi\Model\Operation;
 
-/**
- * No operation is exposed yet: they will be declared here once the matching
- * providers and processors exist under the V1 State namespace.
- */
 #[ApiResource(
     shortName: 'Holder',
     operations: [
@@ -24,27 +20,43 @@ use ApiPlatform\OpenApi\Model\Operation;
             openapi: new Operation(
                 tags: ['V1 - Holders'],
                 summary: 'Register a holder',
-                description: 'Registers a holder, active by default.',
+                description: 'Registers a holder (data subject), active by default.',
             ),
             deserialize: false,
-            processor: HolderProcessor::class
-
+            processor: HolderProcessor::class,
         ),
     ],
     routePrefix: '/v1',
 )]
 final class HolderResource
 {
+    #[ApiProperty(identifier: true)]
+    public ?string $id = null;
+
+    /**
+     * With `deserialize: false`, API Platform never populates these fields
+     * itself: HolderProcessor reads them from the raw request and validates
+     * them explicitly against these constraints before use.
+     */
     #[Assert\NotBlank(message: 'A holder name is required.')]
     public ?string $holderName = null;
+
     #[Assert\NotBlank(message: 'A birth date is required.')]
+    #[Assert\Date(message: 'The birth date must use the Y-m-d format.')]
     public ?string $birthDate = null;
+
+    public ?string $status = null;
+
+    public ?string $createdAt = null;
 
     public static function fromEntity(Holder $holder): self
     {
         $resource = new self();
+        $resource->id = $holder->id()->value;
         $resource->holderName = $holder->name()->value;
-        $resource->birthDate = $holder->birthDate()->value->format('Y-m-d');
+        $resource->birthDate = (string) $holder->birthDate();
+        $resource->status = $holder->status()->value;
+        $resource->createdAt = $holder->createdAt()->format(\DateTimeInterface::ATOM);
 
         return $resource;
     }

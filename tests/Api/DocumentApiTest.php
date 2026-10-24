@@ -15,6 +15,8 @@ final class DocumentApiTest extends ApiTestCase
 
     private const FIXTURE_PATH = __DIR__.'/../http/passport.png';
 
+    private const HOLDER_ID = '770e8400-e29b-41d4-a716-446655440111';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,6 +32,7 @@ final class DocumentApiTest extends ApiTestCase
         $response = $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
             'extra' => [
+                'parameters' => ['holderId' => self::HOLDER_ID],
                 'files' => [
                     'file' => new UploadedFile(self::FIXTURE_PATH, 'passport.png', 'image/png', null, true),
                 ],
@@ -42,6 +45,7 @@ final class DocumentApiTest extends ApiTestCase
         self::assertArrayNotHasKey('wrappedDataKey', $data);
         self::assertArrayNotHasKey('storageKey', $data);
         self::assertNotEmpty($data['fileHash']);
+        self::assertSame(self::HOLDER_ID, $data['holderId']);
     }
 
     public function testItRejectsAMissingFile(): void
@@ -50,6 +54,25 @@ final class DocumentApiTest extends ApiTestCase
 
         $client->request('POST', '/api/v1/documents', [
             'headers' => ['Content-Type' => 'multipart/form-data'],
+            'extra' => [
+                'parameters' => ['holderId' => self::HOLDER_ID],
+            ],
+        ]);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testItRejectsAMissingHolderId(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/api/v1/documents', [
+            'headers' => ['Content-Type' => 'multipart/form-data'],
+            'extra' => [
+                'files' => [
+                    'file' => new UploadedFile(self::FIXTURE_PATH, 'passport.png', 'image/png', null, true),
+                ],
+            ],
         ]);
 
         self::assertResponseStatusCodeSame(422);

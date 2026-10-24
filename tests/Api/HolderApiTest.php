@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Api;
+
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Domain\Entity\Holder;
+use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+final class HolderApiTest extends ApiTestCase
+{
+    protected static ?bool $alwaysBootKernel = true;
+
+    private const ADA = [
+        'holderName' => 'Ada Lovelace',
+        'birthDate' => '1990-01-01',
+    ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->createQuery('DELETE FROM '.Holder::class)->execute();
+    }
+
+    public function testItRegistersAHolder(): void
+    {
+        $response = static::createClient()->request('POST', '/api/v1/holders', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => self::ADA,
+        ]);
+
+        self::assertResponseStatusCodeSame(201);
+
+        $data = $response->toArray();
+        self::assertNotEmpty($data['id']);
+        self::assertSame('Ada Lovelace', $data['holderName']);
+        self::assertSame('1990-01-01', $data['birthDate']);
+        self::assertSame('active', $data['status']);
+    }
+
+    public function testItRejectsMissingFields(): void
+    {
+        static::createClient()->request('POST', '/api/v1/holders', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => [],
+        ]);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidBirthDates(): iterable
+    {
+        yield 'not a date' => ['string'];
+        yield 'wrong format' => ['01/01/1990'];
+        yield 'impossible day' => ['1990-02-30'];
+        yield 'in the future' => ['2999-01-01'];
+    }
+
+    #[DataProvider('invalidBirthDates')]
+    public function testItRejectsAnInvalidBirthDate(string $birthDate): void
+    {
+        static::createClient()->request('POST', '/api/v1/holders', [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => ['holderName' => 'Ada Lovelace', 'birthDate' => $birthDate],
+        ]);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+}
