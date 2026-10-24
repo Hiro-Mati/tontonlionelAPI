@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `RegulatoryScope` feature (entity, value objects, use cases, repository, API resource, `DocumentComplianceChecker` domain service and `NonCompliantDocumentException`): never released, dropped before its first stable version.
 
+### Fixed
+- `POST /v1/documents` answered 500 since `StoreDocumentCommand` requires a `holderId`: the processor now reads a `holderId` multipart field and validates it (`NotBlank`, `Uuid`).
+- `BirthDate::fromString()` rejects malformed or auto-corrected dates with a 422 instead of a `TypeError`.
+- `HolderRepository` was bound to `StorageSpace`; it now targets `Holder` and looks up by `HolderId`.
+- `GeneratorInterface` declares `generate(): string`; `HolderProcessor` validates its inputs and maps domain exceptions to 409/422.
+- Development stack: `Caddyfile.dev` aligned with Mercure >= 0.21 (named hub, `issuer` block, no `demo` directive) and `doctrine/dbal` bumped to 4.5.0 so `doctrine:schema:update` works with ORM 3.6.9.
+
 ### Planned
 - `ConsultDocumentUseCase` (`GET /v1/documents/{id}`).
 
