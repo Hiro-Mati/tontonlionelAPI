@@ -6,8 +6,6 @@ lionel:
   page: true
 
 hiro:
-  name: Hiro-Mati
+  name: Hiro
   title: Contributor
-  url: https://github.com/Hiro-Mati
-  image_url: https://github.com/Hiro-Mati.png
   page: true

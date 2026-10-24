@@ -1,6 +1,6 @@
 # Documents correctifs
 
-Rapport complet des interventions réalisées le 24 octobre 2026 sur la copie de travail du projet **Compliance Store** (dépôt `Hiro-Mati/tontonlionelAPI`, issu de `lionelkouame/compliance-store`).
+Rapport complet des interventions réalisées le 24 octobre 2026 sur la copie de travail du projet **Compliance Store** (dépôt `tontonlionelAPI`, dépôt personnel de Hiro, issu de `lionelkouame/compliance-store`).
 
 Cette documentation est indépendante de la documentation existante (`docs/README.md`, ADR, workflows) : elle décrit uniquement ce qui a été changé, pourquoi, et comment le vérifier.
 

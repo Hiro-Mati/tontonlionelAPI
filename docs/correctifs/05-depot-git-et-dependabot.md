@@ -2,15 +2,15 @@
 
 ## 5.1 Situation
 
-Le dépôt d'origine `lionelkouame/compliance-store` n'accorde que le droit de lecture au compte `Hiro-Mati` (`push: false`). Un push direct sur son `main` est impossible. Le travail a donc été poussé sur le dépôt personnel `Hiro-Mati/tontonlionelAPI`, initialement vide.
+Le dépôt d'origine `lionelkouame/compliance-store` n'accorde que le droit de lecture au compte GitHub de l'utilisateur (Hiro) (`push: false`). Un push direct sur son `main` est impossible. Le travail a donc été poussé sur le dépôt personnel `tontonlionelAPI` de l'utilisateur, initialement vide.
 
 ## 5.2 Identité Git
 
 Le dépôt local portait une identité générique (`imagine-dev <imagine-dev@noreply.invalid>`). Elle a été remplacée, pour ce dépôt uniquement (`git config` sans `--global`), par l'identité GitHub du compte, avec l'adresse noreply qui relie les commits au profil sans exposer d'adresse personnelle :
 
 ```
-git config user.name "Hiro-Mati"
-git config user.email "149916799+Hiro-Mati@users.noreply.github.com"
+git config user.name "Hiro"
+git config user.email "<adresse noreply GitHub du compte>"
 ```
 
 ## 5.3 Commits
@@ -29,7 +29,7 @@ Les messages ont été réécrits une fois (`git filter-branch --msg-filter`) po
 | Remote | URL |
 |--------|-----|
 | `origin` | `https://github.com/lionelkouame/compliance-store.git` (lecture seule) |
-| `perso` | `https://github.com/Hiro-Mati/tontonlionelAPI.git` |
+| `perso` | dépôt personnel `tontonlionelAPI` sur le compte GitHub de l'utilisateur |
 
 | Branche sur `perso` | Commit de tête | Contenu |
 |---------------------|----------------|---------|
@@ -58,7 +58,7 @@ La branche `fix/holder-phpstan-and-dev-stack` conserve le fichier : si elle sert
 
 Deux voies :
 
-1. Le propriétaire accorde le droit d'écriture au compte `Hiro-Mati`, et la branche `fix/holder-phpstan-and-dev-stack` est poussée sur `origin` puis ouverte en pull request.
+1. Le propriétaire accorde le droit d'écriture au compte GitHub de l'utilisateur (Hiro), et la branche `fix/holder-phpstan-and-dev-stack` est poussée sur `origin` puis ouverte en pull request.
 2. Un fork de `lionelkouame/compliance-store` est créé depuis l'interface GitHub, la branche `fix/holder-phpstan-and-dev-stack` y est poussée, et une pull request est ouverte vers `main` du dépôt d'origine. Le template `.github/PULL_REQUEST_TEMPLATE.md` demande un résumé, le type de changement (ici « Bug fix » et « Tech »), la méthode de test (`make test`) et une checklist.
 
 Dans les deux cas, le commit `cb43859` ne doit pas être inclus.
