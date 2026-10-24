@@ -32,11 +32,11 @@ Le bloc `mercure` du snippet `app_site` est réécrit avec un hub **nommé** et 
 
 ```caddyfile
 mercure {
-	# Hub nomme : Mercure >= 0.21 n'accepte qu'un seul hub sans nom par configuration, et ce
-	# snippet est importe deux fois (site HTTPS + site HTTP). Un hub nomme peut etre partage.
+	# Hub nommé : Mercure >= 0.21 n'accepte qu'un seul hub sans nom par configuration, et ce
+	# snippet est importé deux fois (site HTTPS + site HTTP). Un hub nommé peut être partagé.
 	name default
-	# Emetteur de confiance : le claim iss des jetons doit correspondre (mode moderne, remplace
-	# publisher_jwt/subscriber_jwt au niveau racine qui ne sont plus acceptes qu'en mode compat).
+	# Émetteur de confiance : le claim iss des jetons doit correspondre (mode moderne, remplace
+	# publisher_jwt/subscriber_jwt au niveau racine qui ne sont plus acceptés qu'en mode compat).
 	issuer {$MERCURE_TRUSTED_ISSUERS:https://localhost} {
 		publisher {
 			jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
@@ -64,7 +64,9 @@ La valeur est désormais interpolée et vide par défaut, donc surchargeable dep
 
 ### Fichiers non modifiés
 
-`frankenphp/Caddyfile` (production) déclare un seul site et n'a pas été touché. Il recevra la même erreur « compatibility mode » si l'image de production est reconstruite sur le tag flottant : à traiter par le propriétaire, idéalement en épinglant la version de l'image.
+`frankenphp/Caddyfile` (production) déclare un seul site et n'a pas été touché lors de cette intervention. Il recevait la même erreur « compatibility mode » dès que l'image de production était reconstruite sur le tag flottant.
+
+**Mise à jour (audit, document 7).** Le bloc `issuer` a depuis été reporté dans le Caddyfile de production, les directives de développement `tls internal` et `auto_https disable_redirects` en ont été retirées, et l'image est épinglée sur `dunglas/frankenphp:1.13.3-php8.5`. Les deux Caddyfiles sont validés par `frankenphp validate`.
 
 ## 2.4 Vérification
 

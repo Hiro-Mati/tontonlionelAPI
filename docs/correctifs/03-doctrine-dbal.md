@@ -38,7 +38,7 @@ Une branche distante `fix/pin-doctrine-orm` (16 septembre 2026) contournait le p
 
 ## 3.3 Correction
 
-DBAL 4.5.0 est publié. Mise à jour ciblée du lock, sans toucher à `composer.json` dont la contrainte `^4` l'autorise déjà :
+DBAL 4.5.0 est publié. Mise à jour ciblée du lock, sans toucher à `composer.json` : `doctrine/dbal` n'y est pas une dépendance directe, sa contrainte vient de `doctrine/orm` et de `doctrine/doctrine-bundle`, qui acceptent déjà 4.5 :
 
 ```
 docker compose exec php composer update doctrine/dbal

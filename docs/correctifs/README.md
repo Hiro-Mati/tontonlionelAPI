@@ -14,6 +14,7 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | 4 | [Code : 9 erreurs PHPStan et test en échec](04-phpstan-holder.md) | Agrégat Holder, `DocumentProcessor`, `BirthDate`, tests API |
 | 5 | [Dépôt Git et Dependabot](05-depot-git-et-dependabot.md) | Commits, branches, push vers le dépôt personnel, désactivation de Dependabot |
 | 6 | [Améliorations](06-ameliorations.md) | Dépendances à jour, persistance complète de `Holder`, `Document.holderId`, `GET /v1/holders/{id}` |
+| 7 | [Audit complet du projet](07-audit.md) | Revue de chaque dossier et fichier, 60 corrections (sécurité Compose, Caddyfile prod, types Doctrine, chiffrement, outillage, docs), points de conception restants |
 | — | [Journal de bord](JOURNAL.md) | Chronologie horodatée de toutes les actions |
 
 ## Résumé en une page
@@ -38,7 +39,9 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 
 **Améliorations (phase 2, document 6).** Dépendances montées (Symfony 8.1.9, Doctrine ORM 3.7.5, PHPStan 2.3.1, PHPUnit 13.4.3), agrégat `Holder` entièrement persisté avec un type Doctrine `birth_date`, `Document.holderId` persisté et contrôlé (un holder inconnu donne 422), nouvel endpoint `GET /v1/holders/{id}`, repository déplacé au bon endroit, migration `Version20261024071500`.
 
-**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 93 tests et 175 assertions (81 tests et 1 échec avant intervention). En dev, `doctrine:schema:validate` confirme que la base est en phase avec le mapping.
+**Audit (phase 3, document 7).** Revue de l'intégralité du dépôt, fichier par fichier. Corrections les plus importantes : secrets de développement retirés du `compose.yaml` de base et rendus obligatoires en production, Caddyfile de production aligné sur Mercure ≥ 0.21 et débarrassé des directives TLS de développement, image FrankenPHP épinglée, types Doctrine qui lèvent une erreur au lieu de retourner `NULL`, déchiffrement robuste aux données tronquées, `GET /v1/health` qui rapporte le vrai environnement, Makefile et fichiers `.http` corrigés, liens morts de la documentation réparés.
+
+**Vérification finale.** `make test` passe intégralement : Deptrac 0 violation, PHPStan 0 erreur, PHPUnit 107 tests et 200 assertions (81 tests et 1 échec avant intervention, 93 avant l'audit). En dev, `doctrine:schema:validate` confirme que la base est en phase avec le mapping.
 
 **Commits.**
 
@@ -50,10 +53,13 @@ Cette documentation est indépendante de la documentation existante (`docs/READM
 | `e0cdb12` | `main` | `docs(correctifs): report of the 24 October 2026 interventions` |
 | `6fcfe51` | `main` | `chore(deps): update Symfony 8.1.9, Doctrine ORM 3.7.5, PHPStan 2.3.1, PHPUnit 13.4.3` |
 | `ac50bb0` | `main` | `feat(holder): persist the whole aggregate, attach documents, expose GET /v1/holders/{id}` |
+| `fd1e1ff` | `main` | `chore(deps): raise version floors to the installed releases` |
+| `f4ad5d3` | `main` | `docs(correctifs): improvements report and logbook` |
+| `1f7a07e` | `main` | `fix: project-wide audit (compose secrets, prod Caddyfile, Doctrine types, cipher robustness, tooling, docs)` |
 
 ## Ce qui reste ouvert
 
-Les points de conception listés à la fin du document 4 ont été traités dans le document 6. Restent, détaillés en 6.8 :
+Les points de conception listés à la fin du document 4 ont été traités dans le document 6. L'audit (document 7, section 7.6) dresse la liste complète des points de conception non tranchés, classés par priorité. Les principaux :
 
 - `HolderAlreadyExistsException` teste un UUID fraîchement généré ; une vraie règle de dédoublonnage est une décision fonctionnelle.
 - Les transitions `requestErasure()` et `anonymize()` de `Holder` ne sont exposées par aucun endpoint et aucune méthode de repository ne les persiste.
