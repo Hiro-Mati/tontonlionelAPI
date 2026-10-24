@@ -6,7 +6,7 @@ namespace App\Domain\ValueObject;
 
 use App\Domain\Port\Service\IdValidatorInterface;
 
-final readonly class StorageSpaceId
+final readonly class StorageSpaceId implements IdentifierInterface
 {
     public function __construct(
         public string $value,

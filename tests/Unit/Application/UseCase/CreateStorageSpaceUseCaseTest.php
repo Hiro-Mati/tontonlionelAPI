@@ -22,7 +22,7 @@ final class CreateStorageSpaceUseCaseTest extends TestCase
     {
         $storageSpaces = $this->createMock(StorageSpaceRepositoryInterface::class);
         $storageSpaces->method('findByCode')->willReturn(null);
-        $storageSpaces->expects(self::once())->method('add');
+        $storageSpaces->expects(self::once())->method('save');
 
         $idGenerator = $this->createStub(StorageSpaceIdGeneratorInterface::class);
         $idGenerator->method('generate')->willReturn(StorageSpaceId::fromString('660e8400-e29b-41d4-a716-446655440000'));
@@ -53,7 +53,7 @@ final class CreateStorageSpaceUseCaseTest extends TestCase
 
         $storageSpaces = $this->createMock(StorageSpaceRepositoryInterface::class);
         $storageSpaces->method('findByCode')->willReturn($existing);
-        $storageSpaces->expects(self::never())->method('add');
+        $storageSpaces->expects(self::never())->method('save');
 
         $idGenerator = $this->createStub(StorageSpaceIdGeneratorInterface::class);
 

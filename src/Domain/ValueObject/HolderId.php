@@ -4,7 +4,7 @@ namespace App\Domain\ValueObject;
 
 use App\Domain\Port\Service\IdValidatorInterface;
 
-final readonly class HolderId
+final readonly class HolderId implements IdentifierInterface
 {
     public function __construct(
         public string $value,

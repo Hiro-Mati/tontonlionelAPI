@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use App\Domain\Port\Service\IdValidatorInterface;
+
 /**
  * The birth date of a Holder (data subject).
  *
@@ -31,6 +33,12 @@ final readonly class BirthDate
     public function equals(self $other): bool
     {
         return $this->value->format('Y-m-d') === $other->value->format('Y-m-d');
+    }
+
+    public static function fromString(string $value): self
+    {
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
+        return new self($date);
     }
 
     public function __toString(): string

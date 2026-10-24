@@ -32,7 +32,7 @@ final readonly class CreateStorageSpaceUseCase
             name: new StorageSpaceName($command->name),
         );
 
-        $this->storageSpaces->add($storageSpace);
+        $this->storageSpaces->save($storageSpace);
 
         return $storageSpace;
     }

@@ -25,6 +25,10 @@ doctrine:
                 class: App\Infrastructure\Persistence\Doctrine\Type\IdentityDocumentNumberType
             country_code:
                 class: App\Infrastructure\Persistence\Doctrine\Type\CountryCodeType
+            holder_id:
+                class: App\Infrastructure\Persistence\Doctrine\Type\HolderIdType
+            holder_name:
+                class:  App\Infrastructure\Persistence\Doctrine\Type\HolderNameType
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore

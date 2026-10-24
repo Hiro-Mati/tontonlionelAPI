@@ -10,8 +10,22 @@ use App\Domain\ValueObject\HolderId;
 use App\Domain\ValueObject\HolderName;
 use App\Domain\ValueObject\HolderStatus;
 
+/**
+ * The natural person a sensitive document belongs to (data subject under
+ * GDPR). Aggregate root: documents reference it through its HolderId.
+ *
+ * Properties are readonly: a lifecycle change (erasure request,
+ * anonymization) produces a new instance rather than mutating the current
+ * one, and the repository is responsible for persisting it. This mirrors the
+ * approach taken by {@see StorageSpace}.
+ */
 final readonly class Holder
 {
+    /**
+     * @param ?\DateTimeImmutable $consentCollectedAt when consent was collected; null when processing relies on another ground
+     * @param ?\DateTimeImmutable $erasureRequestedAt when the data subject asked for erasure (GDPR art. 17); null otherwise
+     * @param ?\DateTimeImmutable $anonymizedAt       when erasure was carried out; null otherwise
+     */
     private function __construct(
         private HolderId $id,
         private HolderName $name,
@@ -27,11 +41,8 @@ final readonly class Holder
         HolderId $id,
         HolderName $name,
         BirthDate $birthDate,
-        LegalBasis $legalBasis,
         ?\DateTimeImmutable $consentCollectedAt = null,
     ): self {
-        self::assertConsentConsistency($legalBasis, $consentCollectedAt);
-
         return new self(
             id: $id,
             name: $name,
@@ -107,11 +118,6 @@ final readonly class Holder
         return $this->birthDate;
     }
 
-    public function legalBasis(): LegalBasis
-    {
-        return $this->legalBasis;
-    }
-
     public function status(): HolderStatus
     {
         return $this->status;
@@ -135,18 +141,5 @@ final readonly class Holder
     public function anonymizedAt(): ?\DateTimeImmutable
     {
         return $this->anonymizedAt;
-    }
-
-    private static function assertConsentConsistency(
-        LegalBasis $legalBasis,
-        ?\DateTimeImmutable $consentCollectedAt,
-    ): void {
-        if (LegalBasis::Consent === $legalBasis && null === $consentCollectedAt) {
-            throw ConsentDateRequiresConsentBasisException::consentBasisWithoutDate();
-        }
-
-        if (LegalBasis::Consent !== $legalBasis && null !== $consentCollectedAt) {
-            throw ConsentDateRequiresConsentBasisException::dateWithoutConsentBasis();
-        }
     }
 }

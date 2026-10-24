@@ -15,7 +15,7 @@ SYMFONY  = $(PHP) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build refresh up start down logs sh bash test test-db deptrac phpstan composer vendor sf cc setup-dns setup-hooks website-build
+.PHONY        : help build refresh up start down logs sh bash test test-db deptrac phpstan composer vendor sf cc migration-diff migration-generate migrate migration-up migration-down setup-dns setup-hooks website-build
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -96,6 +96,26 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+## —— Doctrine 🗄️ ——————————————————————————————————————————————————————————————
+migration-diff: ## Génère une migration à partir des différences entre les entités et la base
+	@$(SYMFONY) doctrine:migrations:diff
+
+migration-generate: ## Génère un fichier de migration vide
+	@$(SYMFONY) doctrine:migrations:generate
+
+migrate: ## Applique les migrations en attente
+	@$(SYMFONY) doctrine:migrations:migrate --no-interaction
+
+migration-up: ## Exécute le up d'une migration, example: make migration-up v=Version20261024020529
+	@test -n "$(v)" || (echo "Usage: make migration-up v=Version20261024020529" && exit 1)
+	@$(SYMFONY) doctrine:migrations:execute "DoctrineMigrations\\$(v)" --up --no-interaction
+
+migration-down: ## Exécute le down d'une migration, example: make migration-down v=Version20261024020529
+	@test -n "$(v)" || (echo "Usage: make migration-down v=Version20261024020529" && exit 1)
+	@$(SYMFONY) doctrine:migrations:execute "DoctrineMigrations\\$(v)" --down --no-interaction
+
+migrate-all: migration-diff migration-generate migrate
 
 ## —— Website 📖 ———————————————————————————————————————————————————————————————
 website-build: ## Build the Docusaurus website (website/)
