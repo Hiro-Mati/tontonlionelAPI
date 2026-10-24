@@ -26,5 +26,9 @@
   "copyright": {
     "message": "Copyright © 2026 Compliance Store. Built with Docusaurus.",
     "description": "The footer copyright"
+  },
+  "link.item.label.Ce que fait l'application": {
+    "message": "What the application does",
+    "description": "The label of footer link with label=Ce que fait l'application linking to /docs/fonctionnalites"
   }
 }

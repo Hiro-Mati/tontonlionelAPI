@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Compliance Store',
-  tagline: 'Un journal de bord open source sur la conformité documentaire',
+  tagline: 'Un coffre-fort open source pour documents sensibles, et son journal de bord',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -121,6 +121,10 @@ const config = {
               {
                 label: 'Introduction',
                 to: '/docs/intro',
+              },
+              {
+                label: 'Ce que fait l\'application',
+                to: '/docs/fonctionnalites',
               },
               {
                 label: 'Architecture',

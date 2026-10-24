@@ -4,3 +4,10 @@ lionel:
   url: https://github.com/lionelkouame
   image_url: https://github.com/lionelkouame.png
   page: true
+
+hiro:
+  name: Hiro-Mati
+  title: Contributeur
+  url: https://github.com/Hiro-Mati
+  image_url: https://github.com/Hiro-Mati.png
+  page: true
