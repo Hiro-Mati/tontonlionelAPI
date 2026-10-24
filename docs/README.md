@@ -4,6 +4,13 @@ Bienvenue dans la documentation officielle du projet **Compliance Store**.
 
 ---
 
+## 🧭 Par où commencer
+
+* **[Compliance Store expliqué à tout le monde](presentation-generale.md)** : ce que fait l'application, pourquoi, et ce qu'elle ne fait pas encore, sans jargon. Pour la direction, le métier, le juridique, le support et les nouveaux arrivants.
+* **[Documentation technique](documentation-technique.md)** : architecture, modèle de données, cas d'usage, chiffrement, authentification, référence de l'API, configuration, tests, exploitation, points ouverts. Pour les développeurs, intégrateurs et exploitants.
+
+---
+
 ## 📘 Documentation Métier & Architecture
 
 * **[Aperçu Global & Architecture](architecture/overview/index.md)** : Clean Architecture, principes DDD, structure du code et couches applicatives.
