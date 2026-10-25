@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Ce que fait l'application
 
-Cette page explique l'application à toute personne qui veut la comprendre sans lire le code. La version détaillée, avec le modèle de données et la référence de l'API, se trouve dans la [documentation technique](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) du dépôt.
+Cette page explique l'application à toute personne qui veut la comprendre sans lire le code. La version détaillée, avec le modèle de données et la référence de l'API, se trouve dans la [documentation technique](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) du dépôt.
 
 ## Le problème résolu
 
@@ -87,7 +87,7 @@ Seuls l'état de santé du service et la description publique de l'interface son
 - Pas de limitation de débit.
 - Pas d'interface graphique.
 
-Ces points sont listés comme décisions à prendre dans les rapports [d'audit](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/07-audit.md) et de [corrections prioritaires](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md).
+Ces points sont listés comme décisions à prendre dans les rapports [d'audit](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/07-audit.md) et de [corrections prioritaires](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md).
 
 ## En une phrase
 

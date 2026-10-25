@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # What the application does
 
-This page explains the application to anyone who wants to understand it without reading the code. The detailed version, with the data model and the API reference, is the [technical documentation](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) in the repository (in French).
+This page explains the application to anyone who wants to understand it without reading the code. The detailed version, with the data model and the API reference, is the [technical documentation](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) in the repository (in French).
 
 ## The problem it solves
 
@@ -87,7 +87,7 @@ Only the service's health status and the public description of the interface are
 - No rate limiting.
 - No graphical interface.
 
-These points are listed as decisions to make in the [audit](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/07-audit.md) and [priority fixes](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md) reports (in French).
+These points are listed as decisions to make in the [audit](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/07-audit.md) and [priority fixes](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md) reports (in French).
 
 ## In one sentence
 

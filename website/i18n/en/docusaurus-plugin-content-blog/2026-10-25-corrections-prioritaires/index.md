@@ -45,7 +45,7 @@ A document could be stored, never read back. Added: metadata read, list per hold
 
 ## Evening: write for the others
 
-Every piece of work has its documentation in `docs/correctifs/` of the working repository: eight reports, a timestamped logbook, then a [plain-language overview](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/09-presentation-generale.md) and a [technical documentation](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) (both in French). The main README was rewritten, and a checklist of what every team member must do after pulling the changes (rebuild the image, migrate, create their key) was added.
+Every piece of work has its documentation in `docs/correctifs/` of the working repository: eight reports, a timestamped logbook, then a [plain-language overview](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/09-presentation-generale.md) and a [technical documentation](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) (both in French). The main README was rewritten, and a checklist of what every team member must do after pulling the changes (rebuild the image, migrate, create their key) was added.
 
 ## The numbers
 
@@ -53,4 +53,4 @@ Deptrac 0 violation, PHPStan 0 error at maximum level, 159 PHPUnit tests and 381
 
 ## What remains to decide
 
-The work deliberately left open the decisions that belong to the project owner: expiry and rotation of API keys, master key rotation, rate limiting, retention and export of the audit trail, linking identity documents to a holder, a real role for storage spaces, document retention period. They are listed in the [priority fixes](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md) report, section 8.8.
+The work deliberately left open the decisions that belong to the project owner: expiry and rotation of API keys, master key rotation, rate limiting, retention and export of the audit trail, linking identity documents to a holder, a real role for storage spaces, document retention period. They are listed in the [priority fixes](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md) report, section 8.8.

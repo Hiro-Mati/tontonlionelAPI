@@ -20,14 +20,14 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://hiro-mati.github.io',
+  url: 'https://hiro-hunter-dev-job.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/tontonlionelAPI/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Hiro-Mati', // Usually your GitHub org/user name.
+  organizationName: 'Hiro-hunter-dev-job', // Usually your GitHub org/user name.
   projectName: 'tontonlionelAPI', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -56,7 +56,7 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
           editUrl:
-            'https://github.com/Hiro-Mati/tontonlionelAPI/tree/main/website/',
+            'https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/tree/main/website/',
         },
         blog: {
           showReadingTime: true,
@@ -65,7 +65,7 @@ const config = {
             xslt: true,
           },
           editUrl:
-            'https://github.com/Hiro-Mati/tontonlionelAPI/tree/main/website/',
+            'https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/tree/main/website/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -106,7 +106,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/Hiro-Mati/tontonlionelAPI',
+            href: 'https://github.com/Hiro-hunter-dev-job/tontonlionelAPI',
             label: 'GitHub',
             position: 'right',
           },
@@ -137,7 +137,7 @@ const config = {
             items: [
               {
                 label: 'Code source',
-                href: 'https://github.com/Hiro-Mati/tontonlionelAPI',
+                href: 'https://github.com/Hiro-hunter-dev-job/tontonlionelAPI',
               },
               {
                 label: 'Journal de bord',

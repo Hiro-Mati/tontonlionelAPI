@@ -74,4 +74,4 @@ Thirteen ADRs record the structuring choices, available in [`docs/architecture/a
 | 0012 | Regulation engine extracted as an external provider |
 | 0013 | API clients authenticate with hashed Bearer API keys |
 
-They are the technical source of truth; this page gives a simplified view. The [full technical documentation](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) (in French) details the data model, every use case, encryption, authentication and the API reference.
+They are the technical source of truth; this page gives a simplified view. The [full technical documentation](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) (in French) details the data model, every use case, encryption, authentication and the API reference.

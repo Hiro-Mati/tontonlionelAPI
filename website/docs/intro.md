@@ -20,5 +20,5 @@ Ce site n'est pas la documentation technique exhaustive du dépôt (celle-ci vit
 ## Pour aller plus loin
 
 - [Code source sur GitHub](https://github.com/lionelkouame/compliance-store)
-- [Documents de travail d'octobre 2026](https://github.com/Hiro-Mati/tontonlionelAPI/tree/main/docs/correctifs) : rapports détaillés, présentation générale et documentation technique complète
+- [Documents de travail d'octobre 2026](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/tree/main/docs/correctifs) : rapports détaillés, présentation générale et documentation technique complète
 - [Décisions d'architecture (ADR)](https://github.com/lionelkouame/compliance-store/tree/main/docs/architecture/adr)

@@ -74,4 +74,4 @@ Treize ADR tracent les choix structurants, consultables dans [`docs/architecture
 | 0012 | Moteur de réglementation extrait comme fournisseur externe |
 | 0013 | Authentification des clients d'API par clés Bearer hachées |
 
-C'est la source de vérité technique ; cette page en donne une vue simplifiée. La [documentation technique complète](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) détaille le modèle de données, chaque cas d'usage, le chiffrement, l'authentification et la référence de l'API.
+C'est la source de vérité technique ; cette page en donne une vue simplifiée. La [documentation technique complète](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md) détaille le modèle de données, chaque cas d'usage, le chiffrement, l'authentification et la référence de l'API.

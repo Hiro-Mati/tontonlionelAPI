@@ -45,7 +45,7 @@ On pouvait déposer un document, jamais le relire. Ajout de la lecture des méta
 
 ## Le soir : écrire pour les autres
 
-Chaque chantier a sa documentation dans `docs/correctifs/` du dépôt de travail : huit rapports, un journal de bord horodaté, puis une [présentation pour tout public](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/09-presentation-generale.md) et une [documentation technique](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md). Le README principal a été refondu, et une liste de ce que chaque membre de l'équipe doit faire après avoir récupéré les changements (reconstruire l'image, migrer, créer sa clé) a été ajoutée.
+Chaque chantier a sa documentation dans `docs/correctifs/` du dépôt de travail : huit rapports, un journal de bord horodaté, puis une [présentation pour tout public](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/09-presentation-generale.md) et une [documentation technique](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/10-documentation-technique.md). Le README principal a été refondu, et une liste de ce que chaque membre de l'équipe doit faire après avoir récupéré les changements (reconstruire l'image, migrer, créer sa clé) a été ajoutée.
 
 ## Les chiffres
 
@@ -53,4 +53,4 @@ Deptrac 0 violation, PHPStan 0 erreur au niveau maximal, 159 tests PHPUnit et 38
 
 ## Ce qui reste à décider
 
-Le travail a volontairement laissé ouvertes les décisions qui appartiennent au propriétaire du projet : expiration et rotation des clés d'API, rotation de la clé maître, limitation de débit, rétention et export du journal d'audit, rattachement des pièces d'identité à un porteur, rôle réel des espaces de stockage, durée de conservation des documents. Elles sont listées dans le rapport de [corrections prioritaires](https://github.com/Hiro-Mati/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md), section 8.8.
+Le travail a volontairement laissé ouvertes les décisions qui appartiennent au propriétaire du projet : expiration et rotation des clés d'API, rotation de la clé maître, limitation de débit, rétention et export du journal d'audit, rattachement des pièces d'identité à un porteur, rôle réel des espaces de stockage, durée de conservation des documents. Elles sont listées dans le rapport de [corrections prioritaires](https://github.com/Hiro-hunter-dev-job/tontonlionelAPI/blob/main/docs/correctifs/08-corrections-prioritaires.md), section 8.8.
